@@ -1,0 +1,466 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="car">
+  <xacro:arg name="wheel_diameter" default="0.112"/>
+
+  <xacro:property name="wheel_radius" value="${$(arg wheel_diameter)/2}"/>
+  <xacro:property name="wheel_width" value="0.047"/>
+  <xacro:property name="wheel_friction" value="0.8"/>
+  <xacro:property name="wheelbase_length" value="0.3429"/>
+  <xacro:property name="front_wheelbase_width" value="0.25"/>
+  <xacro:property name="rear_wheelbase_width" value="0.25"/>
+  <xacro:property name="wheel_mass" value="0.1"/>
+  <xacro:property name="total_mass" value = "3.0"/>
+  <xacro:property name="shock_travel" value = "0.09"/>
+  <xacro:property name="chassis_height" value = "0.06"/>
+  <xacro:property name="chassis_elevation" value = "-0.01"/>
+  <xacro:property name="chassis_mass" value = "${total_mass-4*wheel_mass}"/>
+
+
+  <xacro:macro name="cylinder_inertia" params="m r h">
+        <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
+                    iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
+                    izz="${m*r*r/2}" /> 
+  </xacro:macro>
+
+  <xacro:macro name="box_inertia" params="m x y z">
+          <inertia  ixx="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0"
+                    iyy="${m*(x*x+z*z)/12}" iyz = "0"
+                    izz="${m*(x*x+z*z)/12}" /> 
+  </xacro:macro>
+
+  <xacro:macro name="sphere_inertia" params="m r">
+          <inertia  ixx="${2*m*r*r/5}" ixy = "0" ixz = "0"
+                    iyy="${2*m*r*r/5}" iyz = "0"
+                    izz="${2*m*r*r/5}" /> 
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertial" params="m r h">
+    <inertial>
+      <mass value="${m}"/>
+      <cylinder_inertia m="${m}" r="${r}" h="${h}"/>
+    </inertial>
+  </xacro:macro>
+
+  <link name="dummy">
+   </link>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.75 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.015" iyy="0.0375" izz="0.0375"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <link name="chassis_link">
+    <visual>
+      <geometry>
+        <box size="${wheelbase_length} ${front_wheelbase_width} ${chassis_height}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${wheelbase_length} ${front_wheelbase_width} ${chassis_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${chassis_mass}"/>
+      <box_inertia m="${chassis_mass}" x="${wheelbase_length}" y="${front_wheelbase_width}" z="${chassis_height}"/>
+    </inertial>
+  </link>
+
+  <link name="back_left_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+
+    <cylinder_inertial m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+  </link>
+
+  <link name="laser_scanner_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size=".127 0.1016 0.0508"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size=".127 0.1016 0.0508"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1e-5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+  <joint name="laser_scanner_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.1397 0 0.2159"/>
+    <parent link="base_link"/>
+    <child link="laser_scanner_link"/>
+  </joint>
+
+  <gazebo reference="laser_scanner_link">
+    <sensor type="gpu_ray" name="laser_scanner">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>20</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>${-pi}</min_angle>
+            <max_angle>${pi}</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>15.0</max>
+          <resolution>0.1</resolution>
+        </range>
+      </ray>
+      <plugin name="gpu_laser" filename="libgazebo_ros_gpu_laser.so">
+        <topicName>/scan</topicName>
+        <frameName>laser_scanner_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+
+  <link name="back_right_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+    <cylinder_inertial m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+  </link>
+
+  <link name="front_left_wheel_steer">
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="5.1458e-5" iyy="5.1458e-5" izz="6.125e-5"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>  
+    <link name="front_left_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+    <cylinder_inertial m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+  </link>
+
+  <link name="front_right_wheel_steer">
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="5.1458e-5" iyy="5.1458e-5" izz="6.125e-5"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>  
+
+  <link name="front_right_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+    <cylinder_inertial m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+  </link>
+
+  <link name="back_left_wheel_shock">
+      <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.75 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.015" iyy="0.0375" izz="0.0375"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="dummy_joint" type="fixed">
+     <parent link="dummy"/>
+     <child link="base_link"/>
+   </joint>
+   
+  <joint name="back_left_shock_joint" type="prismatic">
+    <limit lower="0" upper="${shock_travel}" effort="100" velocity="100"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="back_left_wheel_shock"/>
+    <origin rpy="0 0 0" xyz="0 ${rear_wheelbase_width/2}  ${-shock_travel/2}"/>
+  </joint>
+
+  <joint name="back_left_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="back_left_wheel_shock"/>
+    <child link="back_left_wheel"/>
+    <origin rpy="${-pi/2} 0 0" xyz="0 0 0"/>
+    <limit effort="10000" velocity="500" />
+  </joint>
+
+
+  <link name="back_right_wheel_shock">
+      <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.75 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.015" iyy="0.0375" izz="0.0375"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+
+  <joint name="back_right_shock_joint" type="prismatic">
+    <limit lower="0" upper="${shock_travel}" effort="100" velocity="100"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="back_right_wheel_shock"/>
+    <origin rpy="0 0 0" xyz="0 ${-rear_wheelbase_width/2} ${-shock_travel/2}"/>
+  </joint>
+
+  <joint name="back_right_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="back_right_wheel_shock"/>
+    <child link="back_right_wheel"/>
+    <origin rpy="${-pi/2} 0 0" xyz="0 0 0"/>
+    <limit effort="10000" velocity="500" />
+  </joint>
+
+  <link name="front_left_wheel_shock">
+      <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.75 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.015" iyy="0.0375" izz="0.0375"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+    <link name="front_right_wheel_shock">
+      <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.75 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.015" iyy="0.0375" izz="0.0375"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="front_right_shock_joint" type="prismatic">
+    <limit lower="0" upper="${shock_travel}" effort="100" velocity="100"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="front_right_wheel_shock"/>
+    <origin rpy="0 0 0" xyz="${wheelbase_length} ${-front_wheelbase_width/2} ${-shock_travel/2}"/>
+  </joint>
+
+
+  <joint name="front_left_shock_joint" type="prismatic">
+    <limit lower="0" upper="${shock_travel}" effort="100" velocity="100"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="front_left_wheel_shock"/>
+    <origin rpy="0 0 0" xyz="${wheelbase_length} ${front_wheelbase_width/2}  ${-shock_travel/2}"/>
+  </joint>
+
+
+  <joint name="front_left_wheel_steer_joint" type="revolute">
+    <limit lower="-1" upper="1" effort="1" velocity="5"/>
+    <axis xyz="0 0 1"/>
+    <parent link="front_left_wheel_shock"/>
+    <child link="front_left_wheel_steer"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+
+  <joint name="front_left_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="front_left_wheel_steer"/>
+    <child link="front_left_wheel"/>
+    <origin rpy="${-pi/2} 0 0" xyz="0 0 0"/>
+  </joint>
+
+  <joint name="front_right_wheel_steer_joint" type="revolute">
+    <limit lower="-1" upper="1" effort="1" velocity="5"/>
+    <axis xyz="0 0 1"/>
+    <parent link="front_right_wheel_shock"/>
+    <child link="front_right_wheel_steer"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+
+  <joint name="front_right_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="front_right_wheel_steer"/>
+    <child link="front_right_wheel"/>
+    <origin rpy="${-pi/2} 0 0" xyz="0 0 0"/>
+  </joint>
+
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis_link"/>
+    <origin rpy="0 0 0" xyz="${wheelbase_length/2} 0 ${chassis_height/2 + chassis_elevation}"/>
+  </joint>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/sim_car</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="front_left_wheel">
+    <mu1>${wheel_friction}</mu1>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="front_right_wheel">
+    <mu1>${wheel_friction}</mu1>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="back_left_wheel">
+    <mu1>${wheel_friction}</mu1>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="back_right_wheel">
+    <mu1>${wheel_friction}</mu1>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <dampingFactor>0.00007</dampingFactor>
+  </gazebo>
+  <gazebo>
+    <plugin name="fake_car_plugin" filename="libfake_car_plugin.so">
+    </plugin>
+  </gazebo>
+</robot>

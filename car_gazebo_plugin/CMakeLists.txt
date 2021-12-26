@@ -15,6 +15,9 @@ find_package(gazebo REQUIRED)
 find_package(gazebo_ros REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(ackermann_msgs REQUIRED)
+
 # find_package(mx_joint_controller_msgs REQUIRED)
 
 add_library(car_gazebo_plugin SHARED src/car_gazebo_plugin.cpp)
@@ -27,6 +30,9 @@ ament_target_dependencies(car_gazebo_plugin
   "gazebo_ros"
   "rclcpp"
   "sensor_msgs"
+  "ackermann_msgs"
+  "std_msgs"
+  "geometry_msgs"
 #  "mx_joint_controller_msgs"
   )
 

@@ -460,7 +460,7 @@
     <dampingFactor>0.00007</dampingFactor>
   </gazebo>
   <gazebo>
-    <plugin name="fake_car_plugin" filename="libfake_car_plugin.so">
+    <plugin name="car_gazebo_plugin" filename="libcar_gazebo_plugin.so">
     </plugin>
   </gazebo>
 </robot>

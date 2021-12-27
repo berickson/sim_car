@@ -4,6 +4,7 @@
 #include <gazebo_ros/node.hpp>
 #include <iostream>
 
+
 namespace car_gazebo_plugin {
 
 CarGazeboPlugin::CarGazeboPlugin()
@@ -113,21 +114,18 @@ void CarGazeboPlugin::Load(gazebo::physics::ModelPtr model,
     // publish
     odo_fl_pub = ros_node_->create_publisher<std_msgs::msg::Int32>("/" + model_->GetName() + "/odo_fl", 10);
     odo_fr_pub = ros_node_->create_publisher<std_msgs::msg::Int32>("/" + model_->GetName() + "/odo_fr", 10);
-    ackermann_pub =
-        ros_node_->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(
-            "/" + model_->GetName() + "/cmd_ackermann", 10);
+    ackermann_pub = ros_node_->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/" + model_->GetName() + "/cmd_ackermann", 10);
+
+    pose_pub = ros_node_->create_publisher<geometry_msgs::msg::PoseStamped>("/" + model_->GetName() + "/pose", 10);
+
 
     // subscribe
-    joy_sub = ros_node_->create_subscription<sensor_msgs::msg::Joy>(
-        "/joy", 2,
-        std::bind(&CarGazeboPlugin::joy_callback, this, std::placeholders::_1));
+    joy_sub = ros_node_->create_subscription<sensor_msgs::msg::Joy>("/joy", 2, std::bind(&CarGazeboPlugin::joy_callback, this, std::placeholders::_1));
 
-    ackermann_sub =
-        ros_node_
-            ->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(
-                "/" + model_->GetName() + "/cmd_ackermann", 2,
-                std::bind(&CarGazeboPlugin::ackermann_callback, this,
-                          std::placeholders::_1));
+    ackermann_sub = ros_node_->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(
+      "/" + model_->GetName() + "/cmd_ackermann", 2, std::bind(&CarGazeboPlugin::ackermann_callback, this, std::placeholders::_1));
+
+
   }
 
   // Hook into simulation update loop
@@ -146,10 +144,32 @@ void CarGazeboPlugin::Update() {
 
   auto dt = (cur_time - last_sim_time_).Double();
 
-  // Publish joint states
+
+  // publish to ros every update_period_ms
   auto update_dt = (cur_time - last_update_time_).Double();
   if (update_dt * 1000 >= update_period_ms_) {
+
+    auto pose = model_->WorldPose();
+    // RCLCPP_INFO_STREAM( ros_node_->get_logger(), "pose.x" << pose.X() << "pose.y" << pose.Y() << "pose.x" << pose.Z());
+
+    geometry_msgs::msg::PoseStamped pose_msg;
+    pose_msg.header.stamp = ros_node_->now();
+    pose_msg.header.frame_id = "world";
+    pose_msg.pose.position.x = pose.X();
+    pose_msg.pose.position.y = pose.Y();
+    pose_msg.pose.position.z = pose.Z();
+    pose_msg.pose.orientation.x = pose.Rot().X();
+    pose_msg.pose.orientation.y = pose.Rot().Y();
+    pose_msg.pose.orientation.z = pose.Rot().Z();
+    pose_msg.pose.orientation.w = pose.Rot().W();
+    pose_pub->publish(pose_msg);
+
+
+
+
     publish_state();
+
+    // Publish joint states
     auto msg = JointState{};
     msg.header.stamp = ros_node_->now();
 

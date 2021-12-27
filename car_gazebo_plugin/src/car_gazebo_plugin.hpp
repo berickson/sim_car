@@ -1,6 +1,7 @@
 #ifndef CAR_GAZEBO_PLUGIN__CAR_GAZEBO_PLUGIN_HPP_
 #define CAR_GAZEBO_PLUGIN__CAR_GAZEBO_PLUGIN_HPP_
 
+#include <tf2_ros/transform_broadcaster.h>
 #include <ackermann_msgs/msg/ackermann_drive_stamped.hpp>
 #include <gazebo/common/PID.hh>
 #include <gazebo/common/Plugin.hh>
@@ -115,6 +116,7 @@ class CarGazeboPlugin : public gazebo::ModelPlugin {
 
   rclcpp::Node::SharedPtr ros_node_;
   rclcpp::Publisher<JointState>::SharedPtr joint_state_pub_;
+  std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
 
   double steer = 0;
   double velocity = 0;

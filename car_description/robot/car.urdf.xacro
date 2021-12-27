@@ -128,28 +128,31 @@
   </joint>
 
   <gazebo reference="laser_scanner_link">
-    <sensor type="gpu_ray" name="laser_scanner">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>20</update_rate>
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>360</samples>
-            <resolution>1</resolution>
-            <min_angle>${-pi}</min_angle>
-            <max_angle>${pi}</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>0.10</min>
-          <max>15.0</max>
-          <resolution>0.1</resolution>
-        </range>
-      </ray>
-      <plugin name="gpu_laser" filename="libgazebo_ros_gpu_laser.so">
-        <topicName>/scan</topicName>
-        <frameName>laser_scanner_link</frameName>
+    <sensor type="ray" name="laser_scanner">
+    <always_on>true</always_on>
+    <visualize>true</visualize>
+    <update_rate>20</update_rate>
+    <ray>
+      <scan>
+        <horizontal>
+          <samples>360</samples>
+          <resolution>1</resolution>
+          <min_angle>${-pi}</min_angle>
+          <max_angle>${pi}</max_angle>
+        </horizontal>
+      </scan>
+      <range>
+        <min>0.10</min>
+        <max>15.0</max>
+        <resolution>0.1</resolution>
+      </range>
+    </ray>
+      <plugin name="scan" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>laser_scanner_link</frame_name>
       </plugin>
     </sensor>
   </gazebo>

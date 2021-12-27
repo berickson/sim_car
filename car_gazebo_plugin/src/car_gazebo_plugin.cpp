@@ -57,10 +57,11 @@ void CarGazeboPlugin::Load(gazebo::physics::ModelPtr model,
     RCLCPP_DEBUG(ros_node_->get_logger(), j.first.c_str());
   }
 
+  tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*ros_node_);
+
   // fake_car code here
   {
-    RCLCPP_DEBUG(ros_node_->get_logger(), "Connected to model %s",
-                 model_->GetName().c_str());
+    RCLCPP_DEBUG(ros_node_->get_logger(), "Connected to model %s", model_->GetName().c_str());
 
     jc = model_->GetJointController();
 
@@ -116,7 +117,7 @@ void CarGazeboPlugin::Load(gazebo::physics::ModelPtr model,
     odo_fr_pub = ros_node_->create_publisher<std_msgs::msg::Int32>("/" + model_->GetName() + "/odo_fr", 10);
     ackermann_pub = ros_node_->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/" + model_->GetName() + "/cmd_ackermann", 10);
 
-    pose_pub = ros_node_->create_publisher<geometry_msgs::msg::PoseStamped>("/" + model_->GetName() + "/pose", 10);
+    pose_pub = ros_node_->create_publisher<geometry_msgs::msg::PoseStamped>("/" + model_->GetName() + "/pose", qos);
 
 
     // subscribe
@@ -163,6 +164,34 @@ void CarGazeboPlugin::Update() {
     pose_msg.pose.orientation.z = pose.Rot().Z();
     pose_msg.pose.orientation.w = pose.Rot().W();
     pose_pub->publish(pose_msg);
+
+    {
+      rclcpp::Time now = ros_node_->now();
+      geometry_msgs::msg::TransformStamped t;
+
+      // Read message content and assign it to
+      // corresponding tf variables
+      t.header.stamp = now;
+      t.header.frame_id = "world";
+      t.child_frame_id = "base_link";
+
+      // Turtle only exists in 2D, thus we get x and y translation
+      // coordinates from the message and set the z coordinate to 0
+      t.transform.translation.x =  pose.X();
+      t.transform.translation.y =  pose.Y();
+      t.transform.translation.z =  pose.Z();;
+
+      // For the same reason, turtle can only rotate around one axis
+      // and this why we set rotation in x and y to 0 and obtain
+      // rotation in z axis from the message
+      t.transform.rotation.x = pose.Rot().X();
+      t.transform.rotation.y = pose.Rot().Y();
+      t.transform.rotation.z = pose.Rot().Z();
+      t.transform.rotation.w = pose.Rot().W();
+
+      // Send the transformation
+      tf_broadcaster_->sendTransform(t);
+    }
 
 
 

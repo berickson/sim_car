@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 import os
 from ament_index_python.packages import get_package_prefix
 from ament_index_python.packages import get_package_share_directory

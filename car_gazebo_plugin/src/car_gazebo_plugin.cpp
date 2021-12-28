@@ -143,9 +143,6 @@ void CarGazeboPlugin::Update() {
   }
 
 
-  auto dt = (cur_time - last_sim_time_).Double();
-
-
   // publish to ros every update_period_ms
   auto update_dt = (cur_time - last_update_time_).Double();
   if (update_dt * 1000 >= update_period_ms_) {

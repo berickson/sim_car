@@ -21,8 +21,6 @@ find_package(ackermann_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 
-# find_package(mx_joint_controller_msgs REQUIRED)
-
 add_library(car_gazebo_plugin SHARED src/car_gazebo_plugin.cpp)
 
 target_include_directories(car_gazebo_plugin PUBLIC
@@ -38,7 +36,6 @@ ament_target_dependencies(car_gazebo_plugin
   "geometry_msgs"
   "tf2"
   "tf2_ros"
-#  "mx_joint_controller_msgs"
   )
 
 install(TARGETS

@@ -24,13 +24,14 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 #### ROS 2 Integration
 
 | Topic | |
+| --- | --- |
 | /car/cmd_ackermann | Publish messages here to control the car |
 | /joy | Car listens to joystick and turns it into Ackermman commands |
 | /car/odo_fl | Odometer tick count for front left wheel |
 | /car/odo_fr | Odometer tick count for front right wheel |
 | /car/pose | Ground truth pose from Simulator |
 | /scan | Lidar scan output |
-| /joint_states | joint positions from Gazebo
+| /joint_states | joint positions from Gazebo |
 
 ## Launch Files
 

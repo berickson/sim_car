@@ -9,8 +9,12 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 - install ROS2 Galactic
 - install other required packages (list tbd)
 - clone this repo into your workspaces src folder
-- colcon build
-- soure install/setup.bash
+- Then:
+```
+colcon build
+source install/setup.bash
+ros2 launch sim_car all.launch
+```
 
 ## Models
 ### car

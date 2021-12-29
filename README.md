@@ -22,6 +22,7 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 - Rear wheel drive
 
 #### ROS 2 Integration
+
 | Topic | |
 | /car/cmd_ackermann | Publish messages here to control the car |
 | /joy | Car listens to joystick and turns it into Ackermman commands |

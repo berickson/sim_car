@@ -18,7 +18,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
 
     pkg_sim_car = get_package_share_directory('sim_car')
-    xacro_file = os.path.join(get_package_share_directory('sim_car'), 'robot/', 'car.urdf.xacro')
+    xacro_file = os.path.join(get_package_share_directory('sim_car'), 'robot/', 'red_crash.urdf.xacro')
     assert os.path.exists(xacro_file), "The xacro doesnt exist in "+str(xacro_file)
 
     install_dir = get_package_prefix('sim_car')
@@ -37,13 +37,8 @@ def generate_launch_description():
     robot_description_config = xacro.process_file(xacro_file)
     robot_desc = robot_description_config.toxml()
 
-    # print(robot_desc)
-    
-    # start_steering_control = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(pkg_box_car_description, 'launch', 'steering_control.launch.py'),
-    #     )
-    # ) 
+    print(robot_desc)
+
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -58,6 +53,5 @@ def generate_launch_description():
             parameters=[
                 {"robot_description": robot_desc}],
             output="screen"),
-        #start_steering_control,
     ])
 

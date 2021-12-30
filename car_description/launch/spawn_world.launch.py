@@ -15,7 +15,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
-    pkg_box_car_gazebo = get_package_share_directory('sim_car')
+    pkg_sim_car = get_package_share_directory('sim_car')
 
     # Gazebo launch
     gazebo = IncludeLaunchDescription(
@@ -27,7 +27,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
           'world',
-          default_value=[os.path.join(pkg_box_car_gazebo, 'worlds', 'empty.world'), ''],
+          default_value=[os.path.join(pkg_sim_car, 'worlds', 'empty.world'), ''],
           description='SDF world file'),
         gazebo
     ])

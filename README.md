@@ -44,3 +44,6 @@ ros2 launch sim_car all.launch
 | all.launch.py | Run latest test setup in Gazebo, currently an Ackermann drive car in a simple world with joystick control |
 | spawn_car.launch.py | Spawn an Ackermann drive car in Gazebo |
 | spawn_world.launch.py | Launch Gazeboy with an empty world |
+
+## Todo List
+I keep the todo for this on in a Google Doc (https://docs.google.com/document/d/1eDoU0HPi217dMZmRpME3X8Uc7ZKnQc10sKgLSsA3TdY/edit?usp=sharing)

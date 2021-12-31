@@ -1,15 +1,24 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="car">
-  <xacro:arg name="wheel_diameter" default="0.112"/>
+  <xacro:arg name="wheel_diameter" default="0.120"/>
+
+
+  <xacro:property name="update_rate" default="20"/>
 
   <xacro:property name="wheel_radius" value="${$(arg wheel_diameter)/2}"/>
-  <xacro:property name="wheel_width" value="0.047"/>
+  <xacro:property name="wheel_width" value="0.032"/>
+  <xacro:property name="wheel_mass" value="0.1"/>
+
+  <xacro:property name="omni_wheel_radius" value="${wheel_radius}"/>
+  <xacro:property name="omni_wheel_width" value="0.029"/>
+  <xacro:property name="omni_wheel_mass" value="${wheel_mass}"/>
+  <xacro:property name="omni_vertical_offset" value="0.005"/>
+
   <xacro:property name="wheel_friction" value="0.8"/>
   <xacro:property name="wheelbase_length" value="0.3429"/>
   <xacro:property name="front_wheelbase_width" value="0.25"/>
   <xacro:property name="rear_wheelbase_width" value="0.25"/>
-  <xacro:property name="wheel_mass" value="0.1"/>
-  <xacro:property name="total_mass" value = "3.0"/>
+  <xacro:property name="total_mass" value = "5.0"/>
   <xacro:property name="shock_travel" value = "0.09"/>
 
   <!-- see https://www.gobilda.com/beeline-chassis-kit/ -->
@@ -18,6 +27,14 @@
   <xacro:property name="chassis_length" value = "0.432"/>
   <xacro:property name="chassis_elevation" value = "-0.01"/>
   <xacro:property name="chassis_mass" value = "${total_mass-4*wheel_mass}"/>
+
+  <!-- all the batteries, pi, etc. are represented by one box -->>
+  <xacro:property name="components_height" value = "0.04"/>
+  <xacro:property name="components_width" value = "0.30"/>
+  <xacro:property name="components_length" value = "0.15"/>
+  <xacro:property name="components_mass" value = "2.0"/>
+
+
 
   <!-- wheelbase is to wheel centers -->
   <xacro:property name="wheelbase_width" value = "${chassis_width+wheel_width}"/>
@@ -68,35 +85,67 @@
         <cylinder_inertial m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
     </link>
 
+    <gazebo reference="${name}">
+        <mu1>${wheel_friction}</mu1>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
   </xacro:macro>
 
-  <link name="dummy">
+  <xacro:macro name="xbox" params="name length width height mass">
+    <link name="${name}">
+        <visual>
+        <geometry>
+            <box size="${length} ${width} ${height}"/>
+        </geometry>
+        </visual>
+        <collision>
+        <geometry>
+            <box size="${length} ${width} ${height}"/>
+        </geometry>
+        </collision>
+        <inertial>
+        <mass value="${mass}"/>
+        <box_inertia m="${mass}" x="${length}" y="${width}" z="${height}"/>
+        </inertial>
+    </link>  
+  </xacro:macro>
+
+  <xacro:macro name="omni_wheel" params="name" >
+    <link name="${name}">
+        <visual>
+        <geometry>
+            <cylinder length="${omni_wheel_width}" radius="${omni_wheel_radius}"/>
+        </geometry>
+        <material name="black">
+            <color rgba="0 0 0 1"/>
+        </material>
+        </visual>
+        <collision>
+        <geometry>
+            <cylinder length="${omni_wheel_width}" radius="${omni_wheel_radius}"/>
+        </geometry>
+        </collision>
+
+        <cylinder_inertial m="${wheel_mass}" r="${omni_wheel_radius}" h="${omni_wheel_width}"/>
+    </link>
+
+    <gazebo reference="${name}">
+        <mu1>${wheel_friction}</mu1>
+        <mu2>0.0}</mu2>
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
+  </xacro:macro>
+
+
+  <link name="base_footprint">
    </link>
 
   <link name="base_link">
-    <visual>
-      <origin xyz="0 0 0.1" rpy="0 0 0"/>
-      <geometry>
-        <cylinder length="0.2" radius="0.01"/>
-      </geometry>
-      <material name="silver">
-        <color rgba="0.75 0.75 0.75 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0.1" rpy="0 0 0"/>
-      <geometry>
-        <cylinder length="0.2" radius="0.01"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="0.01"/>
-      <inertia ixx="0.015" iyy="0.0375" izz="0.0375"
-               ixy="0" ixz="0" iyz="0"/>
-    </inertial>
   </link>
 
-  <link name="chassis_link">
+  <link name="chassis">
     <visual>
       <geometry>
         <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
@@ -113,8 +162,14 @@
     </inertial>
   </link>
 
-  <wheel name="back_left_wheel"></wheel>
-  <wheel name="back_right_wheel"></wheel>
+  <xbox name="components" length="${components_length}" width="${components_width}" height="${components_height}" mass="${components_mass}">
+  </xbox>
+  
+
+
+  
+  <omni_wheel name="back_left_wheel"></omni_wheel>
+  <omni_wheel name="back_right_wheel"></omni_wheel>
   <wheel name="mid_left_wheel"></wheel>
   <wheel name="mid_right_wheel"></wheel>
   <wheel name="front_left_wheel"></wheel>
@@ -178,8 +233,8 @@
 
 
 
-  <joint name="dummy_joint" type="fixed">
-     <parent link="dummy"/>
+  <joint name="base_link_joint" type="fixed">
+     <parent link="base_footprint"/>
      <child link="base_link"/>
     <origin rpy="0 0 0" xyz="0 0 ${wheel_radius/2}"/>
    </joint>
@@ -188,42 +243,42 @@
 
   <joint name="back_left_wheel_joint" type="continuous">
     <axis xyz="0 0 1"/>
-    <parent link="chassis_link"/>
+    <parent link="chassis"/>
     <child link="back_left_wheel"/>
-    <origin rpy="${-pi/2} 0 0" xyz="${-wheelbase_length/2} ${wheelbase_width/2} 0"/>
+    <origin rpy="${-pi/2} 0 0" xyz="${-wheelbase_length/2} ${wheelbase_width/2} ${omni_vertical_offset}"/>
     <limit effort="10000" velocity="500" />
   </joint>
   <joint name="back_right_wheel_joint" type="continuous">
     <axis xyz="0 0 1"/>
-    <parent link="chassis_link"/>
+    <parent link="chassis"/>
     <child link="back_right_wheel"/>
-    <origin rpy="${-pi/2} 0 0" xyz="${-wheelbase_length/2} -${wheelbase_width/2} 0"/>
+    <origin rpy="${-pi/2} 0 0" xyz="${-wheelbase_length/2} -${wheelbase_width/2} ${omni_vertical_offset}"/>
     <limit effort="10000" velocity="500" />
   </joint>  
   <joint name="mid_left_wheel_joint" type="continuous">
     <axis xyz="0 0 1"/>
-    <parent link="chassis_link"/>
+    <parent link="chassis"/>
     <child link="mid_left_wheel"/>
     <origin rpy="${-pi/2} 0 0" xyz="0 ${wheelbase_width/2} 0"/>
     <limit effort="10000" velocity="500" />
   </joint>
   <joint name="mid_right_wheel_joint" type="continuous">
     <axis xyz="0 0 1"/>
-    <parent link="chassis_link"/>
+    <parent link="chassis"/>
     <child link="mid_right_wheel"/>
     <origin rpy="${-pi/2} 0 0" xyz="0 ${-wheelbase_width/2} 0"/>
     <limit effort="10000" velocity="500" />
   </joint>
   <joint name="front_left_wheel_joint" type="continuous">
     <axis xyz="0 0 1"/>
-    <parent link="chassis_link"/>
+    <parent link="chassis"/>
     <child link="front_left_wheel"/>
     <origin rpy="${-pi/2} 0 0" xyz="${wheelbase_length/2} ${wheelbase_width/2} 0"/>
     <limit effort="10000" velocity="500" />
   </joint>
   <joint name="front_right_wheel_joint" type="continuous">
     <axis xyz="0 0 1"/>
-    <parent link="chassis_link"/>
+    <parent link="chassis"/>
     <child link="front_right_wheel"/>
     <origin rpy="${-pi/2} 0 0" xyz="${wheelbase_length/2} ${-wheelbase_width/2} 0"/>
     <limit effort="10000" velocity="500" />
@@ -231,9 +286,87 @@
 
   <joint name="chassis_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="chassis_link"/>
+    <child link="chassis"/>
     <origin rpy="0 0 0" xyz="0 0 ${wheel_radius/2}"/>
   </joint>
+
+  <joint name="components_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="components"/>
+    <origin rpy="0 0 0" xyz="${-wheelbase_length/4} 0 ${(components_height+chassis_height)/2}"/>
+  </joint>
+
+
+  <gazebo>
+    <!-- 
+      couldn't find documentation, found names in https://github.com/ros-simulation/gazebo_ros_pkgs/blob/galactic/gazebo_plugins/src/gazebo_ros_diff_drive.cpp
+
+      good example here:
+      https://github.com/ros-simulation/gazebo_ros_pkgs/blob/galactic/gazebo_plugins/test/worlds/gazebo_ros_diff_drive.world
+
+    -->
+
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+
+        <ros>
+          <!-- <namespace></namespace> -->
+          <remapping>cmd_vel:=cmd_vel</remapping>
+          <remapping>odom:=odom</remapping>
+        </ros>
+
+      <!-- Plugin update rate in Hz -->
+      <update_rate>${update_rate}</update_rate>
+
+      <!-- Name of left joint, defaults to `left_joint` -->
+      <left_joint>mid_left_wheel_joint</left_joint>
+      <leftJoint>mid_left_wheel_joint</leftJoint>
+
+      <!-- Name of right joint, defaults to `right_joint` -->
+      <right_joint>mid_right_wheel_joint</right_joint>
+      <rightJoint>mid_right_wheel_joint</rightJoint>
+
+      <!-- The distance from the center of one wheel to the other, in meters, defaults to 0.34 m -->
+      <wheel_separation>${wheelbase_width}</wheel_separation>
+
+      <!-- Diameter of the wheels, in meters, defaults to 0.15 m -->
+      <wheel_diameter>${wheel_radius * 2.0}</wheel_diameter>
+
+      <!-- Wheel acceleration, in rad/s^2, defaults to 0.0 rad/s^2 -->
+      <max_wheel_acceleration>5.0</max_wheel_acceleration>
+
+      <!-- Maximum torque which the wheels can produce, in Nm, defaults to 5 Nm -->
+      <max_wheel_torque>2.4</max_wheel_torque>
+
+      <!-- Topic to receive geometry_msgs/Twist message commands, defaults to `cmd_vel` -->
+      <commandTopic>cmd_vel</commandTopic>
+
+      <!-- Topic to publish nav_msgs/Odometry messages, defaults to `odom` -->
+      <odometryTopic>odom</odometryTopic>
+
+      <!-- Odometry frame, defaults to `odom` -->
+      <odometry_frame>odom</odometry_frame>
+
+      <!-- Robot frame to calculate odometry from, defaults to `base_footprint` -->
+      <robot_base_frame>base_footprint</robot_base_frame>
+
+      <!-- Odometry source, 0 for ENCODER, 1 for WORLD, defaults to WORLD -->
+      <odometry_source>1</odometry_source>
+
+      <!-- Set to true to publish transforms for the wheel links, defaults to false -->
+      <publish_wheel_tf>true</publish_wheel_tf>
+
+      <!-- Set to true to publish transforms for the odometry, defaults to true -->
+      <publish_odom_tf>true</publish_odom_tf>
+
+      <!-- Set to true to publish sensor_msgs/JointState on /joint_states for the wheel joints, defaults to false -->
+      <publishWheelJointState>true</publishWheelJointState>
+
+      <!-- Set to true to swap right and left wheels, defaults to true -->
+      <legacyMode>false</legacyMode>
+    </plugin>
+  </gazebo>
+
+
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
@@ -241,24 +374,7 @@
     </plugin>
   </gazebo>
 
-  <gazebo reference="front_left_wheel">
-    <mu1>${wheel_friction}</mu1>
-    <material>Gazebo/DarkGrey</material>
-  </gazebo>
-  <gazebo reference="front_right_wheel">
-    <mu1>${wheel_friction}</mu1>
-    <material>Gazebo/DarkGrey</material>
-  </gazebo>
-  <gazebo reference="back_left_wheel">
-    <mu1>${wheel_friction}</mu1>
-    <material>Gazebo/DarkGrey</material>
-  </gazebo>
-  <gazebo reference="back_right_wheel">
-    <mu1>${wheel_friction}</mu1>
-    <material>Gazebo/DarkGrey</material>
-  </gazebo>
-
-  <gazebo reference="chassis_link">
+  <gazebo reference="chassis">
     <material>Gazebo/Red</material>
   </gazebo>
 

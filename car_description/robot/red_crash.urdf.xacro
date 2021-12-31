@@ -161,31 +161,12 @@
   </xacro:macro>
 
 
-  <link name="base_footprint">
-   </link>
+  <link name="base_footprint"/>
+  <link name="base_link"/>
 
-  <link name="base_link">
-  </link>
-
-  <link name="chassis">
-    <visual>
-      <geometry>
-        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="${chassis_mass}"/>
-      <box_inertia m="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="${chassis_height}"/>
-    </inertial>
-  </link>
-
-  <xbox name="components" length="${components_length}" width="${components_width}" height="${components_height}" mass="${components_mass}">
-  </xbox>
+  <xbox name="chassis" length="${chassis_length}" width="${chassis_width}" height="${chassis_height}" mass="${chassis_mass}"/>
+  <xbox name="components" length="${components_length}" width="${components_width}" height="${components_height}" mass="${components_mass}"/>
+  
   
 
 
@@ -198,15 +179,15 @@
   <wheel name="front_right_wheel"></wheel>
 
 
-  <xcylinder name="laser_scanner_link" length="0.045" radius="0.040"/>
+  <xcylinder name="lidar" length="0.045" radius="0.040"/>
 
   <joint name="laser_scanner_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.1397 0 0.2159"/>
     <parent link="base_link"/>
-    <child link="laser_scanner_link"/>
+    <child link="lidar"/>
   </joint>
 
-  <gazebo reference="laser_scanner_link">
+  <gazebo reference="lidar">
     <sensor type="ray" name="laser_scanner">
     <always_on>true</always_on>
     <visualize>false</visualize>
@@ -221,7 +202,7 @@
         </horizontal>
       </scan>
       <range>
-        <min>0.10</min>
+        <min>0.20</min>
         <max>15.0</max>
         <resolution>0.01</resolution>
       </range>
@@ -231,7 +212,7 @@
           <remapping>~/out:=scan</remapping>
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>laser_scanner_link</frame_name>
+        <frame_name>lidar</frame_name>
       </plugin>
     </sensor>
   </gazebo>
@@ -377,14 +358,6 @@
       <legacyMode>false</legacyMode>
     </plugin>
   </gazebo>
-
-<!-- 
-
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/sim_car</robotNamespace>
-    </plugin>
-  </gazebo> -->
 
   <gazebo reference="chassis">
     <material>Gazebo/Red</material>

@@ -45,6 +45,15 @@ def generate_launch_description():
         cmd=['gzclient'],
         cwd=[launch_dir], output='screen')
 
+    rviz_config_path = os.path.join(pkg_sim_car, 'config', 'red-crash.rviz')
+    print("-----------------: "+rviz_config_path)
+    start_rviz2_cmd = ExecuteProcess(
+        cmd=['rviz2','--display-config',rviz_config_path], 
+        cwd=[launch_dir], 
+        output='screen')
+
+
+
         
 
     # # Gazebo launch
@@ -69,6 +78,7 @@ def generate_launch_description():
     ld.add_action(world_config)
     ld.add_action(start_gazebo_server_cmd)
     ld.add_action(start_gazebo_client_cmd)
+    ld.add_action(start_rviz2_cmd)
     ld.add_action(car)
     ld.add_action(joy)
     ld.add_action(teleop_twist)

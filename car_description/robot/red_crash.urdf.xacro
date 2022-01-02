@@ -89,14 +89,14 @@
 
   </xacro:macro>
 
-  <xacro:macro name="xcylinder" params="name radius length color:='Gazebo/DarkGrey' mass:=0.1" >
+  <xacro:macro name="xcylinder" params="name radius length color:='Gazebo/DarkGrey' rgba:='0.5 0.5 0.5 1.0' mass:=0.1" >
     <link name="${name}">
         <visual>
         <geometry>
             <cylinder length="${length}" radius="${radius}"/>
         </geometry>
         <material name="${name}_material">
-            <color rgba="0 0 0 1"/>
+            <color rgba="${rgba}"/>
         </material>
         </visual>
         <collision>
@@ -114,12 +114,15 @@
 
   </xacro:macro>
 
-  <xacro:macro name="xbox" params="name length width height mass">
+  <xacro:macro name="xbox" params="name length width height mass color:='Gazebo/Gray' rgba:='0.5 0.5 0.5 1.0'">
     <link name="${name}">
         <visual>
         <geometry>
             <box size="${length} ${width} ${height}"/>
         </geometry>
+        <material name="${name}_material">
+            <color rgba="${rgba}"/>
+        </material>
         </visual>
         <collision>
         <geometry>
@@ -130,7 +133,11 @@
         <mass value="${mass}"/>
         <box_inertia m="${mass}" x="${length}" y="${width}" z="${height}"/>
         </inertial>
-    </link>  
+    </link>
+    <gazebo reference="${name}">
+      <material>${color}</material>
+    </gazebo>
+
   </xacro:macro>
 
   <xacro:macro name="omni_wheel" params="name" >
@@ -139,8 +146,8 @@
         <geometry>
             <cylinder length="${omni_wheel_width}" radius="${omni_wheel_radius}"/>
         </geometry>
-        <material name="black">
-            <color rgba="0 0 0 1"/>
+        <material name="gray">
+            <color rgba="0.5 0.5 0.5 1"/>
         </material>
         </visual>
         <collision>
@@ -164,8 +171,8 @@
   <link name="base_footprint"/>
   <link name="base_link"/>
 
-  <xbox name="chassis" length="${chassis_length}" width="${chassis_width}" height="${chassis_height}" mass="${chassis_mass}"/>
-  <xbox name="components" length="${components_length}" width="${components_width}" height="${components_height}" mass="${components_mass}"/>
+  <xbox name="chassis" length="${chassis_length}" width="${chassis_width}" height="${chassis_height}" mass="${chassis_mass}" color="Gazebo/Red" rgba="1 0 0 1" />
+  <xbox name="components" length="${components_length}" width="${components_width}" height="${components_height}" mass="${components_mass}" color="Gazebo/Gray"  rgba="0.5 0.5 0.5 1" />
   
   
 
@@ -278,9 +285,9 @@
   </joint>
 
   <joint name="components_joint" type="fixed">
-    <parent link="chassis"/>
+    <parent link="base_link"/>
     <child link="components"/>
-    <origin rpy="0 0 0" xyz="${-wheelbase_length/4} 0 ${(components_height+chassis_height)/2}"/>
+    <origin rpy="0 0 0" xyz="${-wheelbase_length/4} 0 ${(components_height+chassis_height+wheel_radius)/2}"/>
   </joint>
 
 
@@ -357,10 +364,6 @@
       <!-- Set to true to swap right and left wheels, defaults to true -->
       <legacyMode>false</legacyMode>
     </plugin>
-  </gazebo>
-
-  <gazebo reference="chassis">
-    <material>Gazebo/Red</material>
   </gazebo>
 
 

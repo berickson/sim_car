@@ -1,0 +1,28 @@
+teleop_twist_joy_node:
+  ros__parameters:
+    axis_angular.pitch: -1
+    axis_angular.roll: -1
+    axis_angular.yaw: 0
+    axis_linear.x: 1
+    axis_linear.y: -1
+    axis_linear.z: -1
+    enable_button: 0
+    enable_turbo_button: 1
+    qos_overrides./parameter_events.publisher.depth: 1000
+    qos_overrides./parameter_events.publisher.durability: volatile
+    qos_overrides./parameter_events.publisher.history: keep_last
+    qos_overrides./parameter_events.publisher.reliability: reliable
+    require_enable_button: true
+    scale_angular.pitch: 0.0
+    scale_angular.roll: 0.0
+    scale_angular.yaw: 0.5
+    scale_angular_turbo.pitch: 0.0
+    scale_angular_turbo.roll: 0.0
+    scale_angular_turbo.yaw: 4.0
+    scale_linear.x: 0.5
+    scale_linear.y: 0.0
+    scale_linear.z: 0.0
+    scale_linear_turbo.x: 10.0
+    scale_linear_turbo.y: 0.0
+    scale_linear_turbo.z: 0.0
+    use_sim_time: false

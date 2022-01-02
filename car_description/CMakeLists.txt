@@ -50,6 +50,7 @@ install(
 install(
   DIRECTORY
     launch
+    config
     robot
     worlds
     scripts

@@ -16,7 +16,7 @@ def generate_launch_description():
 
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     pkg_sim_car = get_package_share_directory('sim_car')
-    pkg_joy = get_package_share_directory('joy')
+    # pkg_joy = get_package_share_directory('joy')
 
     # Gazebo launch
     gazebo = IncludeLaunchDescription(
@@ -33,6 +33,9 @@ def generate_launch_description():
 
     joy = Node(
             package='joy', executable='joy_node', output='screen');
+    teleop_twist = Node(
+            package='teleop_twist_joy', executable='teleop_node', output='screen', parameters=[os.path.join(pkg_sim_car, "config", "teleop_twist_joy.yaml")])
+
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -42,4 +45,5 @@ def generate_launch_description():
         gazebo,
         car,
         joy,
+        teleop_twist
     ])

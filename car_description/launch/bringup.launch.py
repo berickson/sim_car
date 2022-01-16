@@ -53,8 +53,27 @@ def generate_launch_description():
         output='screen')
 
 
+    bringup_dir = get_package_share_directory('nav2_bringup')
+    bringup_launch_dir = os.path.join(bringup_dir, 'launch')
+    nav2_params_path = os.path.join(get_package_share_directory('sim_car'), 'config/', 'nav2_params.yaml')
 
-        
+    nav_bringup_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(bringup_launch_dir, 'bringup_launch.py')),
+        launch_arguments={
+                          #'namespace': namespace,
+                          #'use_namespace': use_namespace,
+                          'slam': "1",
+                          'map': 'map.yaml',
+                          #'use_sim_time': use_sim_time,
+                          'params_file': nav2_params_path,
+                          #'autostart': autostart}.items()
+                        }.items()
+        )
+
+
+
+        # ros2 launch nav2_bringup bringup_launch.py slam:=1 map:=blank.yaml
 
     # # Gazebo launch
     # gazebo = IncludeLaunchDescription(
@@ -82,4 +101,5 @@ def generate_launch_description():
     ld.add_action(car)
     ld.add_action(joy)
     ld.add_action(teleop_twist)
+    ld.add_action(nav_bringup_cmd)
     return ld

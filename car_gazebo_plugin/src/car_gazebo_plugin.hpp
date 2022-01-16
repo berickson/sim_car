@@ -168,9 +168,9 @@ class CarGazeboPlugin : public gazebo::ModelPlugin {
 
   void joy_callback(sensor_msgs::msg::Joy::SharedPtr msg) {
     ackermann_msgs::msg::AckermannDriveStamped ad;
-    ad.drive.steering_angle = msg->axes[1];
+    ad.drive.steering_angle = msg->axes[0];
     ad.drive.speed =
-        pow(fabs(msg->axes[2]), 2) * (-1.0) * sign_of(msg->axes[2]) * max_speed;
+        pow(fabs(msg->axes[1]), 2)  * sign_of(msg->axes[1]) * max_speed;
     ackermann_pub->publish(ad);
   }
 

@@ -54,6 +54,7 @@ install(
     robot
     worlds
     scripts
+    params
   DESTINATION
     share/${PROJECT_NAME}/
 )

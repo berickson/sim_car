@@ -19,6 +19,7 @@
 
   <exec_depend>gazebo_ros_pkgs</exec_depend>
   <exec_depend>ros2launch</exec_depend>
+  <exec_depend>nav2_simple_commander</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

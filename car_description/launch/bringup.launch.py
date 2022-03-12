@@ -76,11 +76,11 @@ def generate_launch_description():
         # ros2 launch nav2_bringup bringup_launch.py slam:=1 map:=blank.yaml
 
     # # Gazebo launch
-    # gazebo = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py'),
-    #     )
-    # )
+    gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py'),
+        )
+    )
 
     car = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -95,8 +95,9 @@ def generate_launch_description():
 
     ld = LaunchDescription()
     ld.add_action(world_config)
-    ld.add_action(start_gazebo_server_cmd)
-    ld.add_action(start_gazebo_client_cmd)
+    ld.add_action(gazebo)
+    # ld.add_action(start_gazebo_server_cmd)
+    # ld.add_action(start_gazebo_client_cmd)
     ld.add_action(start_rviz2_cmd)
     ld.add_action(car)
     ld.add_action(joy)

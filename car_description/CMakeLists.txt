@@ -43,6 +43,7 @@ install(
 install(
   PROGRAMS
     scripts/spawn_bot.py
+    scripts/sentry.py
   DESTINATION
     lib/${PROJECT_NAME}/
 )

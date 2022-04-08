@@ -126,6 +126,12 @@ void CarGazeboPlugin::Load(gazebo::physics::ModelPtr model,
     ackermann_sub = ros_node_->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(
       "/" + model_->GetName() + "/cmd_ackermann", 2, std::bind(&CarGazeboPlugin::ackermann_callback, this, std::placeholders::_1));
 
+    
+
+    cmd_vel_sub = ros_node_->create_subscription<geometry_msgs::msg::Twist>(
+      // "/" + model_->GetName() +
+       "/cmd_vel", 2, std::bind(&CarGazeboPlugin::twist_callback, this, std::placeholders::_1));
+
 
   }
 
@@ -169,8 +175,8 @@ void CarGazeboPlugin::Update() {
       // Read message content and assign it to
       // corresponding tf variables
       t.header.stamp = now;
-      t.header.frame_id = "world";
-      t.child_frame_id = "base_link";
+      t.header.frame_id = "odom";
+      t.child_frame_id = "base_footprint";
 
       // Turtle only exists in 2D, thus we get x and y translation
       // coordinates from the message and set the z coordinate to 0

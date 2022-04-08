@@ -1,38 +1,24 @@
 #! /usr/bin/env python3
+import math
 import time # Time library
  
-from geometry_msgs.msg import PoseStamped, Pose # Pose with ref frame and timestamp
+from geometry_msgs.msg import PoseStamped, Pose, Quaternion # Pose with ref frame and timestamp
 from rclpy.duration import Duration # Handles time for ROS 2
 import rclpy # Python client library for ROS 2
  
 from nav2_simple_commander.robot_navigator import BasicNavigator, NavigationResult # Helper module
+from tf_transformations import quaternion_from_euler
  
 
 def wait_to_complete(navigator):
     i = 0
     while not navigator.isNavComplete():
-        ################################################
-        #
-        # Implement some code here for your application!
-        #
-        ################################################
-
-        # Do something with the feedback
         i = i + 1
         feedback = navigator.getFeedback()
         if feedback and i % 5 == 0:
-            print('Estimated time of arrival: ' + '{0:.0f}'.format(
-                  Duration.from_msg(feedback.estimated_time_remaining).nanoseconds / 1e9)
-                  + ' seconds.')
-
-            # # Some navigation timeout to demo cancellation
-            # if Duration.from_msg(feedback.navigation_time) > Duration(seconds=600.0):
-            #     navigator.cancelTask()
-
-            # # Some navigation request change to demo preemption
-            # if Duration.from_msg(feedback.navigation_time) > Duration(seconds=18.0):
-            #     goal_pose.pose.position.x = -3.0
-            #     navigator.goToPose(goal_pose)
+            #print(feedback)
+            print('Distance remaining: ' + '{0:.2f}'.format(
+                  feedback.distance_remaining))
 
 # begins navigatator moving to pose
 def navigate_to_pose(navigator, pose):
@@ -42,36 +28,54 @@ def navigate_to_pose(navigator, pose):
     goal_pose.pose = pose
     navigator.goToPose(goal_pose)
 
+def orientation_from_yaw(yaw):
+    a = quaternion_from_euler(0, 0, yaw)
+    q = Quaternion()
+    q.x=a[0]
+    q.y=a[1]
+    q.z=a[2]
+    q.w=a[3]
+    return q
+
 
 def main():
     rclpy.init()
     node = rclpy.create_node('sentry')
 
-    node.get_logger().error("abc")
-
     node.get_logger().info("started sentry")
-    print("1")
     navigator = BasicNavigator()
-    print("2")
-    #help(navigator)
-    #navigator.waitUntilNav2Active(localizer='slam')
-    print("3")
 
     pose_1 = Pose()
     pose_1.position.x = 0.0
     pose_1.position.y = 0.0
-    pose_1.orientation.w = 1.0
+    #help(Quaternion)
+    print(quaternion_from_euler(0.0, 0.0, 0.))
+    pose_1.orientation = orientation_from_yaw(0)
 
     pose_2 = Pose()
     pose_2.position.x = -5.0
     pose_2.position.y = 0.0
-    pose_2.orientation.w = 1.0
+    pose_2.orientation = orientation_from_yaw(math.pi)
+
+    pose_3 = Pose()
+    pose_3.position.x = -5.0
+    pose_3.position.y = 5.0
+    pose_3.orientation = orientation_from_yaw(3*math.pi/2)
+
+    pose_4 = Pose()
+    pose_4.position.x = 5.0
+    pose_4.position.y = 5.0
+    pose_4.orientation = orientation_from_yaw(math.pi)
+
+    
+
+    poses = [pose_1, pose_2, pose_3, pose_4]
+
 
     while True:
-        navigate_to_pose(navigator, pose_1)
-        wait_to_complete(navigator)
-        navigate_to_pose(navigator, pose_2)
-        wait_to_complete(navigator)
+        for pose in poses:
+          navigate_to_pose(navigator, pose)
+          wait_to_complete(navigator)
 
     goal_pose = PoseStamped()
     goal_pose.header.frame_id = 'map'

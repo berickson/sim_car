@@ -146,6 +146,11 @@ class CarGazeboPlugin : public gazebo::ModelPlugin {
 
   rclcpp::Subscription<ackermann_msgs::msg::AckermannDriveStamped>::SharedPtr
       ackermann_sub;
+  
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr
+      cmd_vel_sub;
+
+
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub;
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr odo_fl_pub;
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr odo_fr_pub;

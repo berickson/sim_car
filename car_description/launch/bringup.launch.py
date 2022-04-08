@@ -84,7 +84,8 @@ def generate_launch_description():
 
     car = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_sim_car, 'launch', 'spawn_red_crash.launch.py'),
+            # os.path.join(pkg_sim_car, 'launch', 'spawn_red_crash.launch.py'),
+            os.path.join(pkg_sim_car, 'launch', 'spawn_car.launch.py'),
         )
     )
 

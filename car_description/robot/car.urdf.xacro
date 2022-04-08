@@ -127,7 +127,7 @@
   <gazebo reference="laser_scanner_link">
     <sensor type="ray" name="laser_scanner">
     <always_on>true</always_on>
-    <visualize>true</visualize>
+    <visualize>false</visualize>
     <update_rate>8</update_rate>
     <ray>
       <scan>

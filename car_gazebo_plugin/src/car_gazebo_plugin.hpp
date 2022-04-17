@@ -27,14 +27,21 @@ double sign_of(double x) {
 class BicycleModel {
   double wheelbase_length;
   double steer_angle;
+  double max_steer_angle;
 
  public:
-  BicycleModel(double wheelbase_length, double steer_angle = 0.0) {
+  BicycleModel(double wheelbase_length, double steer_angle = 0.0, double max_steer_angle = M_PI / 4.0) {
     this->wheelbase_length = wheelbase_length;
     this->steer_angle = steer_angle;
+    this->max_steer_angle = max_steer_angle;
   }
 
-  void set_steer_angle(double steer_angle) { this->steer_angle = steer_angle; }
+  void set_steer_angle(double steer_angle) { 
+    if(fabs(steer_angle) > this->max_steer_angle) {
+      steer_angle = sign_of(steer_angle) * this->max_steer_angle;
+    }
+    this->steer_angle = steer_angle; 
+  }
 
   void set_rear_curvature(double k_rear) {
     this->steer_angle = atan(k_rear * this->wheelbase_length);
@@ -127,6 +134,7 @@ class CarGazeboPlugin : public gazebo::ModelPlugin {
   const double shock_d = 30;
   const double wheel_diameter = .112;
   const double max_speed = 3;
+  const double max_turn_angle = M_PI/4.0;
   AckermannModel car_model = {0.25, 0.25};
 
   gazebo::physics::JointControllerPtr jc;
@@ -183,6 +191,7 @@ class CarGazeboPlugin : public gazebo::ModelPlugin {
 
   void ackermann_callback(
       ackermann_msgs::msg::AckermannDriveStamped::SharedPtr msg) {
+    
     car_model.set_steer_angle(msg->drive.steering_angle);
 
     jc->SetPositionTarget(fl_str_joint->GetScopedName(),

@@ -67,9 +67,14 @@ def main():
     pose_4.position.y = 5.0
     pose_4.orientation = orientation_from_yaw(math.pi)
 
+    pose_5 = Pose()
+    pose_5.position.x = 10.0
+    pose_5.position.y = -5.0
+    pose_5.orientation = orientation_from_yaw(math.pi)
+
     
 
-    poses = [pose_1, pose_2, pose_3, pose_4]
+    poses = [pose_1, pose_2, pose_3, pose_4, pose_5]
 
 
     while True:

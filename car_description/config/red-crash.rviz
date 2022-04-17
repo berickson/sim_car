@@ -126,7 +126,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        back_left_wheel_shock:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         back_right_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        back_right_wheel_shock:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -139,12 +149,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        chassis:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        components:
+        chassis_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -154,22 +159,32 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        front_left_wheel_shock:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_left_wheel_steer:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         front_right_wheel:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        lidar:
+        front_right_wheel_shock:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        mid_left_wheel:
+        front_right_wheel_steer:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        mid_right_wheel:
+        laser_scanner_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -204,7 +219,7 @@ Visualization Manager:
       Buffer Length: 1
       Class: rviz_default_plugins/Path
       Color: 117; 80; 123
-      Enabled: true
+      Enabled: false
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
       Length: 0.30000001192092896
@@ -227,6 +242,21 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /local_plan
+      Value: false
+    - Alpha: 1
+      Class: rviz_default_plugins/PointStamped
+      Color: 204; 41; 204
+      Enabled: true
+      History Length: 1
+      Name: PointStamped
+      Radius: 0.20000000298023224
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /lookahead_point
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -323,7 +353,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 26.06018829345703
+      Distance: 21.83782958984375
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

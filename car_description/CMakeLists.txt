@@ -56,6 +56,7 @@ install(
     worlds
     scripts
     params
+    behavior_trees
   DESTINATION
     share/${PROJECT_NAME}/
 )

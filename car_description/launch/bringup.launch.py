@@ -13,6 +13,8 @@ from launch_ros.actions import Node
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
 
+from nav2_common.launch import RewrittenYaml
+
 
 def generate_launch_description():
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
@@ -57,6 +59,12 @@ def generate_launch_description():
     bringup_launch_dir = os.path.join(bringup_dir, 'launch')
     nav2_params_path = os.path.join(get_package_share_directory('sim_car'), 'config/', 'nav2_params.yaml')
 
+    behavior_tree_path = os.path.join(get_package_share_directory('sim_car'), 'behavior_trees', 'navigate_w_replanning_time2.xml')
+    configured_nav2_params = RewrittenYaml(
+        source_file = nav2_params_path,
+        param_rewrites = {'default_nav_to_pose_bt_xml': behavior_tree_path},
+        convert_types=True)
+
     nav_bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(bringup_launch_dir, 'bringup_launch.py')),
@@ -66,7 +74,8 @@ def generate_launch_description():
                           'slam': "1",
                           'map': 'map.yaml',
                           #'use_sim_time': use_sim_time,
-                          'params_file': nav2_params_path,
+                          'params_file':configured_nav2_params,
+                          #'params_file': nav2_params_path,
                           #'autostart': autostart}.items()
                         }.items()
         )

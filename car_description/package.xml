@@ -20,6 +20,8 @@
   <exec_depend>gazebo_ros_pkgs</exec_depend>
   <exec_depend>ros2launch</exec_depend>
   <exec_depend>nav2_simple_commander</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav2_common</exec_depend>
   <exec_depend>tf_transformations</exec_depend>
   <exec_depend>xacro</exec_depend>
 

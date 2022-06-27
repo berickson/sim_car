@@ -127,7 +127,7 @@
   <gazebo reference="laser_scanner_link">
     <sensor type="ray" name="laser_scanner">
     <always_on>true</always_on>
-    <visualize>false</visualize>
+    <visualize>true</visualize>
     <update_rate>8</update_rate>
     <ray>
       <scan>
@@ -139,7 +139,7 @@
         </horizontal>
       </scan>
       <range>
-        <min>0.10</min>
+        <min>0.30</min>
         <max>15.0</max>
         <resolution>0.1</resolution>
       </range>
@@ -252,7 +252,7 @@
       <visual>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="0.2" radius="0.01"/>
+        <cylinder length="0.05" radius="0.01"/>
       </geometry>
       <material name="silver">
         <color rgba="0.75 0.75 0.75 1"/>
@@ -261,7 +261,7 @@
     <collision>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="0.2" radius="0.01"/>
+        <cylinder length="0.05" radius="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -275,7 +275,7 @@
     <visual>
     <origin xyz="0 0 0.1" rpy="0 0 0"/>
     <geometry>
-      <cylinder length="0.2" radius="0.01"/>
+      <cylinder length="0.05" radius="0.01"/>
     </geometry>
     <material name="silver">
       <color rgba="0.75 0.75 0.75 1"/>
@@ -284,7 +284,7 @@
   <collision>
     <origin xyz="0 0 0.1" rpy="0 0 0"/>
     <geometry>
-      <cylinder length="0.2" radius="0.01"/>
+      <cylinder length="0.05" radius="0.01"/>
     </geometry>
   </collision>
   <inertial>
@@ -298,7 +298,7 @@
       <visual>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="0.2" radius="0.01"/>
+        <cylinder length="0.05" radius="0.01"/>
       </geometry>
       <material name="silver">
         <color rgba="0.75 0.75 0.75 1"/>
@@ -307,7 +307,7 @@
     <collision>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="0.2" radius="0.01"/>
+        <cylinder length="0.05" radius="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -321,7 +321,7 @@
       <visual>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="0.2" radius="0.01"/>
+        <cylinder length="0.05" radius="0.01"/>
       </geometry>
       <material name="silver">
         <color rgba="0.75 0.75 0.75 1"/>
@@ -330,7 +330,7 @@
     <collision>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="0.2" radius="0.01"/>
+        <cylinder length="0.05" radius="0.01"/>
       </geometry>
     </collision>
     <inertial>

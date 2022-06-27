@@ -130,7 +130,7 @@ class CarGazeboPlugin : public gazebo::ModelPlugin {
   const double wheelbase_length = 0.3429;
   const double front_wheelbase_width = 0.25;
   const double rear_wheelbase_width = 0.25;
-  const double shock_p = 250;
+  const double shock_p = 1250;
   const double shock_d = 30;
   const double wheel_diameter = .112;
   const double max_speed = 3;

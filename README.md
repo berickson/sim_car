@@ -6,8 +6,12 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 
 ## Getting Started
 
-- install ROS2 Galactic
-- install other required packages (list tbd)
+- install ROS2 Humble desktop full
+- install other required packages
+```
+sudo apt install ros-humble-gazebo-ros-pkgs ros-humble-sensor-msgs ros-humble-sensor-msgs
+```
+
 - clone this repo into your workspaces src folder
 - Then:
 ```
@@ -15,6 +19,12 @@ colcon build
 source install/setup.bash
 ros2 launch sim_car all.launch
 ```
+
+- verify it works by driving with keyboard:
+```
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+
 
 ## Models
 ### car

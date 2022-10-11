@@ -6,19 +6,26 @@ from geometry_msgs.msg import PoseStamped, Pose, Quaternion # Pose with ref fram
 from rclpy.duration import Duration # Handles time for ROS 2
 import rclpy # Python client library for ROS 2
  
-from nav2_simple_commander.robot_navigator import BasicNavigator, NavigationResult # Helper module
+from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult # Helper module
 from tf_transformations import quaternion_from_euler
  
 
 def wait_to_complete(navigator):
     i = 0
-    while not navigator.isNavComplete():
+    while not navigator.isTaskComplete():
         i = i + 1
         feedback = navigator.getFeedback()
         if feedback and i % 5 == 0:
             #print(feedback)
             print('Distance remaining: ' + '{0:.2f}'.format(
                   feedback.distance_remaining))
+    result = navigator.getResult()
+    if result == TaskResult.SUCCEEDED:
+        print('Goal succeeded!')
+    elif result == TaskResult.CANCELED:
+        print('Goal was canceled!')
+    elif result == TaskResult.FAILED:
+        print('Goal failed!')
 
 # begins navigatator moving to pose
 def navigate_to_pose(navigator, pose):
@@ -76,7 +83,7 @@ def main():
 
     poses = [pose_1, pose_2, pose_3, pose_4, pose_5]
 
-
+    #navigator.waitUntilNav2Active(localizer="")
     while True:
         for pose in poses:
           navigate_to_pose(navigator, pose)

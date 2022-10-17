@@ -6,26 +6,27 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 
 ## Getting Started
 
-- install ROS2 Humble desktop full, see https://docs.ros.org/en/humble/Installation.html
-- make a workspace, see https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html
+- install ROS2 Galactic desktop full, see https://docs.ros.org/en/galactic/Installation.html
+- make a workspace, see https://docs.ros.org/en/galactic/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html
 - clone this repo into your workspaces src folder
 - cd workspace folder
 - install dependencies
-```
+
+```bash
 pip3 install transforms3d
 rosdep update
-rosdep install -i --from-path src --rosdistro humble -y
+rosdep install -i --from-path src --rosdistro galactic -y
 ```
 - Then:
 
-```
-colcon build --simlink-install
+```bash
+colcon build --symlink-install
 source install/setup.bash
-ros2 launch sim_car bringup.launch
+ros2 launch sim_car bringup.launch.py
 ```
 
 - verify it works by driving with keyboard in another terminal:
-```
+```bash
 source install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```

@@ -1,13 +1,13 @@
 # sim_car
-New version of my http:/berickson/fake_car simulator targeting ROS 2. This is currently in early development and works with Galactic.
+New version of my http:/berickson/fake_car simulator targeting ROS 2. This is currently in early development and targeting Humble. It currently also works with Galactic.
 
 My goal is to make a series of Gazebo models, worlds, and plugins to simulate my robots for test.
 
 
 ## Getting Started
 
-- install ROS2 Galactic desktop full, see https://docs.ros.org/en/galactic/Installation.html
-- make a workspace, see https://docs.ros.org/en/galactic/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html
+- install ROS2 Humble desktop full, see https://docs.ros.org/en/humble/Installation.html
+- make a workspace, see https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html
 - clone this repo into your workspaces src folder
 - cd workspace folder
 - install dependencies
@@ -15,7 +15,7 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 ```bash
 pip3 install transforms3d
 rosdep update
-rosdep install -i --from-path src --rosdistro galactic -y
+rosdep install -i --from-path src --rosdistro humble -y
 ```
 - Then:
 

@@ -1,5 +1,5 @@
 # sim_car
-New version of my http:/berickson/fake_car simulator targeting ROS 2. This is currently in early development and works with Galactic.
+New version of my http:/berickson/fake_car simulator targeting ROS 2. This is currently in early development and targeting Humble. It currently also works with Galactic.
 
 My goal is to make a series of Gazebo models, worlds, and plugins to simulate my robots for test.
 
@@ -11,21 +11,22 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 - clone this repo into your workspaces src folder
 - cd workspace folder
 - install dependencies
-```
+
+```bash
 pip3 install transforms3d
 rosdep update
 rosdep install -i --from-path src --rosdistro humble -y
 ```
 - Then:
 
-```
-colcon build --simlink-install
+```bash
+colcon build --symlink-install
 source install/setup.bash
-ros2 launch sim_car bringup.launch
+ros2 launch sim_car bringup.launch.py
 ```
 
 - verify it works by driving with keyboard in another terminal:
-```
+```bash
 source install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```

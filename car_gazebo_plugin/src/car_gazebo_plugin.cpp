@@ -3,6 +3,7 @@
 #include <gazebo/physics/physics.hh>
 #include <gazebo_ros/node.hpp>
 #include <iostream>
+#include <gazebo/common/Time.hh>
 
 
 namespace car_gazebo_plugin {
@@ -33,7 +34,7 @@ void CarGazeboPlugin::Load(gazebo::physics::ModelPtr model,
   qos.reliability(RMW_QOS_POLICY_RELIABILITY_RELIABLE);
   qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
 
-  joint_state_pub_ = ros_node_->create_publisher<JointState>("/joint_states", qos);
+  joint_state_pub_ = ros_node_->create_publisher<JointState>("/joint_states", rclcpp::SensorDataQoS());
 
   // Find joints
   auto allJoints = model_->GetJoints();
@@ -175,6 +176,9 @@ void CarGazeboPlugin::Update() {
       // Read message content and assign it to
       // corresponding tf variables
       t.header.stamp = now;
+      t.header.stamp.sec = cur_time.sec;
+      t.header.stamp.nanosec = cur_time.nsec;
+
       t.header.frame_id = "odom";
       t.child_frame_id = "base_footprint";
 
@@ -203,7 +207,8 @@ void CarGazeboPlugin::Update() {
 
     // Publish joint states
     auto msg = JointState{};
-    msg.header.stamp = ros_node_->now();
+    msg.header.stamp.sec = cur_time.sec;
+    msg.header.stamp.nanosec = cur_time.nsec;
 
     for (auto& j : joints_) {
       auto const& name = j.first;

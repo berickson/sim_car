@@ -18,8 +18,12 @@ def main(args=None):
     req.robot_namespace = ""
     req.reference_frame = "world"
 
-    while not cli.wait_for_service(timeout_sec=1.0):
+    while not cli.wait_for_service(timeout_sec=20.0):
         node.get_logger().info('service not available, waiting again...')
+
+    while(node.get_clock().now().seconds()==0):
+        node.get_logger().info('waiting for clock')
+
 
     future = cli.call_async(req)
     rclpy.spin_until_future_complete(node, future)

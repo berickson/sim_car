@@ -5,7 +5,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription, ExecuteProcess
+from launch.actions import IncludeLaunchDescription, ExecuteProcess, TimerAction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
@@ -108,9 +108,15 @@ def generate_launch_description():
     ld.add_action(gazebo)
     # ld.add_action(start_gazebo_server_cmd)
     # ld.add_action(start_gazebo_client_cmd)
-    ld.add_action(start_rviz2_cmd)
+    ld.add_action(TimerAction(
+            period=5.0,
+            actions=[start_rviz2_cmd]))
     ld.add_action(car)
     ld.add_action(joy)
     ld.add_action(teleop_twist)
-    ld.add_action(nav_bringup_cmd)
+    ld.add_action(
+        TimerAction(
+            period=0.0,
+            actions=[nav_bringup_cmd]
+        ))
     return ld

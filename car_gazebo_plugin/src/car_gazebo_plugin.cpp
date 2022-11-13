@@ -30,9 +30,6 @@ void CarGazeboPlugin::Load(gazebo::physics::ModelPtr model,
   ros_node_ = gazebo_ros::Node::Get(sdf);
   RCLCPP_INFO(ros_node_->get_logger(), "Loading Car Gazebo Plugin");
 
-  rclcpp::QoS qos(10);
-  qos.reliability(RMW_QOS_POLICY_RELIABILITY_RELIABLE);
-  qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
 
   joint_state_pub_ = ros_node_->create_publisher<JointState>("/joint_states", rclcpp::SensorDataQoS());
 
@@ -118,7 +115,7 @@ void CarGazeboPlugin::Load(gazebo::physics::ModelPtr model,
     odo_fr_pub = ros_node_->create_publisher<std_msgs::msg::Int32>("/" + model_->GetName() + "/odo_fr", 10);
     ackermann_pub = ros_node_->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/" + model_->GetName() + "/cmd_ackermann", 10);
 
-    pose_pub = ros_node_->create_publisher<geometry_msgs::msg::PoseStamped>("/" + model_->GetName() + "/pose", qos);
+    pose_pub = ros_node_->create_publisher<geometry_msgs::msg::PoseStamped>("/" + model_->GetName() + "/pose", rclcpp::SensorDataQoS());
 
 
     // subscribe

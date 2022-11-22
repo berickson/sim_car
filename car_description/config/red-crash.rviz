@@ -6,12 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Grid1
-        - /TF1
-        - /LaserScan1
-        - /RobotModel1
-        - /Path1
-        - /Path2
       Splitter Ratio: 0.5
     Tree Height: 2246
   - Class: rviz_common/Selection
@@ -31,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: scan
   - Class: slam_toolbox::SlamToolboxPlugin
     Name: SlamToolboxPlugin
 Visualization Manager:
@@ -87,7 +81,7 @@ Visualization Manager:
       Max Intensity: 0
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: LaserScan
+      Name: scan
       Position Transformer: XYZ
       Selectable: false
       Size (Pixels): 3
@@ -192,7 +186,7 @@ Visualization Manager:
       Mass Properties:
         Inertia: false
         Mass: false
-      Name: RobotModel
+      Name: robot
       TF Prefix: ""
       Update Interval: 0
       Value: true
@@ -202,7 +196,7 @@ Visualization Manager:
       Color Scheme: map
       Draw Behind: false
       Enabled: true
-      Name: Map
+      Name: map
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -222,13 +216,13 @@ Visualization Manager:
       Buffer Length: 1
       Class: rviz_default_plugins/Path
       Color: 117; 80; 123
-      Enabled: false
+      Enabled: true
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
       Length: 0.30000001192092896
       Line Style: Billboards
       Line Width: 0.10000000149011612
-      Name: Path
+      Name: local_plan
       Offset:
         X: 0
         Y: 0
@@ -245,13 +239,13 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /local_plan
-      Value: false
+      Value: true
     - Alpha: 1
       Class: rviz_default_plugins/PointStamped
       Color: 204; 41; 204
       Enabled: true
       History Length: 1
-      Name: PointStamped
+      Name: lookahead
       Radius: 0.20000000298023224
       Topic:
         Depth: 5
@@ -271,7 +265,7 @@ Visualization Manager:
       Length: 0.30000001192092896
       Line Style: Billboards
       Line Width: 0.10000000149011612
-      Name: Path
+      Name: global_plan
       Offset:
         X: 0
         Y: 0
@@ -294,7 +288,7 @@ Visualization Manager:
       Color Scheme: map
       Draw Behind: false
       Enabled: true
-      Name: Map
+      Name: global_costmap
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -308,6 +302,48 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /global_costmap/costmap_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: local_costmap
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: local_costmap
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap_updates
       Use Timestamp: false
       Value: true
   Enabled: true
@@ -356,7 +392,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 44.899253845214844
+      Distance: 13.372404098510742
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -374,7 +410,7 @@ Visualization Manager:
       Pitch: 1.5697963237762451
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 4.400406837463379
+      Yaw: 4.690402984619141
     Saved: ~
 Window Geometry:
   Displays:

@@ -382,6 +382,8 @@ slam_toolbox:
     minimum_travel_distance: 0.01
     minimum_travel_heading: 0.01
     map_update_interval: 1.0
+    loop_search_maximum_distance: 0.5
+    
 
 
 waypoint_follower:

@@ -353,6 +353,19 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /local_costmap/published_footprint
       Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: slam_graph
+      Namespaces:
+        slam_toolbox: true
+        slam_toolbox_edges: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /slam_toolbox/graph_visualization
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

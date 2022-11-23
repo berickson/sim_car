@@ -44,6 +44,12 @@ def orientation_from_yaw(yaw):
     q.w=a[3]
     return q
 
+def pose_from_x_y_theta(x,y,theta) :
+    pose = Pose()
+    pose.position.x = float(x)
+    pose.position.y = float(y)
+    pose.orientation = orientation_from_yaw(float(theta))
+    return pose
 
 def main():
     rclpy.init()
@@ -52,36 +58,13 @@ def main():
     node.get_logger().info("started sentry")
     navigator = BasicNavigator()
 
-    pose_1 = Pose()
-    pose_1.position.x = 0.0
-    pose_1.position.y = 0.0
-    #help(Quaternion)
-    print(quaternion_from_euler(0.0, 0.0, 0.))
-    pose_1.orientation = orientation_from_yaw(0)
-
-    pose_2 = Pose()
-    pose_2.position.x = -5.0
-    pose_2.position.y = 0.0
-    pose_2.orientation = orientation_from_yaw(math.pi)
-
-    pose_3 = Pose()
-    pose_3.position.x = -5.0
-    pose_3.position.y = 5.0
-    pose_3.orientation = orientation_from_yaw(3*math.pi/2)
-
-    pose_4 = Pose()
-    pose_4.position.x = 5.0
-    pose_4.position.y = 5.0
-    pose_4.orientation = orientation_from_yaw(math.pi)
-
-    pose_5 = Pose()
-    pose_5.position.x = 10.0
-    pose_5.position.y = -5.0
-    pose_5.orientation = orientation_from_yaw(math.pi)
-
-    
-
-    poses = [pose_1, pose_2, pose_3, pose_4, pose_5]
+    poses = []
+    poses.append(pose_from_x_y_theta( 0.0,   0.0, 0.0))
+    poses.append(pose_from_x_y_theta( 3.3,   0.5, 0.0))
+    poses.append(pose_from_x_y_theta(-5.0,   0.0, math.pi))
+    poses.append(pose_from_x_y_theta(-5.0,   5.0, math.pi/2))
+    poses.append(pose_from_x_y_theta( 5.0,   5.0, math.pi))
+    poses.append(pose_from_x_y_theta( 10.0, -5.0, math.pi))
 
     #navigator.waitUntilNav2Active(localizer="")
     while True:

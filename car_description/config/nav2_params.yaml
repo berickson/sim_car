@@ -127,89 +127,38 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.05
+      xy_goal_tolerance: 0.1
       yaw_goal_tolerance: 0.25
-    # DWB parameters
-    FollowPath:
-      plugin: "nav2_rotation_shim_controller::RotationShimController"
-      primary_controller: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
-      #primary_controller: "nav2_smac_planner::SmacPlannerHybrid"
-
-      # plugin: "dwb_core::DWBLocalPlanner"
-      debug_trajectory_details: True
-      allow_reversing: True # bke
-      use_rotate_to_heading: false # bke
-      min_vel_x: 0.01
-      min_vel_y: 0.01
-      max_vel_x: 0.26
-      max_vel_y: 0.0
-      max_vel_theta: 1.0
-      min_speed_xy: 0.0
-      max_speed_xy: 0.26
-      min_speed_theta: 0.0
-      # Add high threshold velocity for turtlebot 3 issue.
-      # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
-      acc_lim_x: 2.5
-      acc_lim_y: 0.0
-      acc_lim_theta: 3.2
-      decel_lim_x: -2.5
-      decel_lim_y: 0.0
-      decel_lim_theta: -3.2
-      vx_samples: 20
-      vy_samples: 5
-      vtheta_samples: 20
-      sim_time: 1.7
-      linear_granularity: 0.05
-      angular_granularity: 0.025
-      transform_tolerance: 0.2
-      xy_goal_tolerance: 0.25
-      trans_stopped_velocity: 0.25
-      short_circuit_trajectory_evaluation: True
-      stateful: True
-      #critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      BaseObstacle.scale: 0.02
-      PathAlign.scale: 32.0
-      PathAlign.forward_point_distance: 0.1
-      # GoalAlign.scale: 24.0
-      GoalAlign.scale: 0.01
-      GoalAlign.forward_point_distance: 0.1
-      PathDist.scale: 32.0
-      # GoalDist.scale: 24.0
-      GoalDist.scale: 0.01
-      RotateToGoal.scale: 32.0
-      RotateToGoal.slowing_factor: 5.0
-      RotateToGoal.lookahead_time: -1.0
-      lookahead_dist: 0.2
-      min_lookahead_dist: 0.1
-      max_lookahead_dist: 0.5
 
 
     # RPP
-    # FollowPath:
-    #   plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
-    #   desired_linear_vel: 0.5
-    #   lookahead_dist: 0.6
-    #   min_lookahead_dist: 0.3
-    #   max_lookahead_dist: 0.9
-    #   lookahead_time: 1.5
-    #   rotate_to_heading_angular_vel: 1.8
-    #   transform_tolerance: 0.1
-    #   use_velocity_scaled_lookahead_dist: false
-    #   min_approach_linear_velocity: 0.05
-    #   max_allowed_time_to_collision_up_to_carrot: 1.0
-    #   use_regulated_linear_velocity_scaling: true
-    #   use_cost_regulated_linear_velocity_scaling: false
-    #   regulated_linear_scaling_min_radius: 0.9
-    #   regulated_linear_scaling_min_speed: 0.25
-    #   use_rotate_to_heading: true
-    #   allow_reversing: true
-    #   rotate_to_heading_min_angle: 0.785
-    #   max_angular_accel: 3.2
-
-    #   GoalDist.scale: 0.01
-    #   GoalAlign.scale: 0.01
-
+    FollowPath:
+      plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
+      allow_reversing: true
+      approach_velocity_scaling_dist: 0.6
+      cost_scaling_dist: 0.6
+      cost_scaling_gain: 1.0
+      desired_linear_vel: 0.5
+      inflation_cost_scaling_factor: 3.0
+      lookahead_dist: 0.6
+      lookahead_time: 1.5
+      max_allowed_time_to_collision_up_to_carrot: 1.0
+      max_angular_accel: 3.2
+      max_lookahead_dist: 0.9
+      max_robot_pose_search_dist: 1.4875
+      min_approach_linear_velocity: 0.05
+      min_lookahead_dist: 0.3
+      plugin: nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+      regulated_linear_scaling_min_radius: 0.9
+      regulated_linear_scaling_min_speed: 0.25
+      #rotate_to_heading_angular_vel: 1.8
+      #rotate_to_heading_min_angle: 0.785
+      transform_tolerance: 0.1
+      use_cost_regulated_linear_velocity_scaling: true
+      use_interpolation: true
+      use_regulated_linear_velocity_scaling: true
+      use_rotate_to_heading: false
+      use_velocity_scaled_lookahead_dist: false
 
     
 
@@ -376,6 +325,21 @@ recoveries_server:
 robot_state_publisher:
   ros__parameters:
     use_sim_time: True
+
+
+velocity_smoother:
+  ros__parameters:
+    # smoothing_frequency: 20.0
+    # scale_velocities: false
+    # feedback: "OPEN_LOOP"
+    max_velocity: [5.0, 0.0, 2.5]
+    # min_velocity: [-5.0, 0.0, -2.5]
+    # deadband_velocity: [0.0, 0.0, 0.0]
+    # velocity_timeout: 1.0
+    # max_accel: [2.5, 0.0, 3.2]
+    # max_decel: [-2.5, 0.0, -3.2]
+    # odom_topic: "odom"
+    # odom_duration: 0.1      
 
 slam_toolbox:
   ros__parameters:

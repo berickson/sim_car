@@ -30,6 +30,7 @@ ros2 launch sim_car bringup.launch.py
 source install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
+- Nav2 with SLAM will be running, navigatee using the 2D Goal Pose button in RViz
 
 
 ## Models
@@ -58,6 +59,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 | File |  |
 | --- | --- |
 | all.launch.py | Run latest test setup in Gazebo, currently an Ackermann drive car in a simple world with joystick control |
+| bringup.launch.py | Launch full simulation with Ackermann model, Nav2 and SLAM |
 | spawn_car.launch.py | Spawn an Ackermann drive car in Gazebo |
 | spawn_world.launch.py | Launch Gazeboy with an empty world |
 

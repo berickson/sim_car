@@ -46,6 +46,12 @@
       cmd_vel_listener.publish(twist);
     }
 
+  let goal_pose_topic = new ROSLIB.Topic({
+    ros:ros,
+    name:"/goal_pose",
+    messageType:"/geometry_msgs/msg/PoseStamped"
+  });
+
   createJoystick = function () {
     var options = {
         zone: document.getElementById('zone_joystick'),
@@ -81,7 +87,45 @@
         self.move(0, 0);
       });
     }
-    
+
+    nav_to_pose = function(x, y) {
+      var time = new Date().getTime();
+      var secs = Math.floor(time/1000);
+      var nsecs = Math.round(1000000000*(time/1000-secs));
+
+      var goal_pose = new ROSLIB.Message({
+        "header": {
+          "stamp": {
+            "sec": secs,
+            "nsec": nsecs
+          },
+          "frame_id": "map"
+        },
+        "pose": {
+          "position": {
+            "x": x,
+            "y": y,
+            "z": 0
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0.0,
+            "w": 1.0
+          }
+        }
+      });
+      goal_pose_topic.publish(goal_pose);
+    }
+
+    nav_home = function() {
+      nav_to_pose(0.0, 0.0);
+    }
+
+    nav_wp1 = function() {
+      nav_to_pose(5.0, 0.4);
+    }
+
     window.onload = function () {
       createJoystick();
     }  
@@ -92,6 +136,8 @@
   <h1>Simple ROS User Interface</h1>
   <p>Connection status: <span id="status"></span></p>
   <p>Last /txt_msg received: <span id="msg"></span></p>
+  <button onclick="nav_home()">Nav Home</button>
+  <button onclick="nav_wp1()">Nav Wp1</button>
   <div id="zone_joystick" style="position: relative;"></div>
 </body>
 </html>

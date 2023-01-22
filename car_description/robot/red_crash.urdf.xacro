@@ -197,7 +197,7 @@
   <gazebo reference="lidar">
     <sensor type="ray" name="laser_scanner">
     <always_on>true</always_on>
-    <visualize>false</visualize>
+    <!-- <visualize>false</visualize> -->
     <update_rate>20</update_rate>
     <ray>
       <scan>

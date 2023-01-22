@@ -7,25 +7,34 @@ from rclpy.duration import Duration # Handles time for ROS 2
 import rclpy # Python client library for ROS 2
  
 from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult # Helper module
-from tf_transformations import quaternion_from_euler
+from tf_transformations import quaternion_from_euler, euler_from_quaternion
+import random
  
 
 def wait_to_complete(navigator):
+    reuse_line = "\r"
     i = 0
     while not navigator.isTaskComplete():
         i = i + 1
         feedback = navigator.getFeedback()
         if feedback and i % 5 == 0:
-            #print(feedback)
-            print('Distance remaining: ' + '{0:.2f}'.format(
-                  feedback.distance_remaining))
+            print(f"{reuse_line}Distance remaining: {feedback.distance_remaining:5.2f}", end="")
     result = navigator.getResult()
     if result == TaskResult.SUCCEEDED:
-        print('Goal succeeded!')
+        print(f'\nGoal succeeded!')
     elif result == TaskResult.CANCELED:
-        print('Goal was canceled!')
+        print(f'\nGoal was canceled!')
     elif result == TaskResult.FAILED:
-        print('Goal failed!')
+        print(f'\nGoal failed!')
+
+def yaw_from_pose(pose):
+    quaternion = (
+    pose.orientation.x,
+    pose.orientation.y,
+    pose.orientation.z,
+    pose.orientation.w)
+
+    return euler_from_quaternion(quaternion)[2]
 
 # begins navigatator moving to pose
 def navigate_to_pose(navigator, pose):
@@ -33,6 +42,8 @@ def navigate_to_pose(navigator, pose):
     goal_pose.header.frame_id = 'map'
     goal_pose.header.stamp = navigator.get_clock().now().to_msg()
     goal_pose.pose = pose
+    
+    print(f"Navigating to pose {pose.position.x:g},{pose.position.y:g} {yaw_from_pose(pose)*180/math.pi:g}°");
     navigator.goToPose(goal_pose)
 
 def orientation_from_yaw(yaw):
@@ -63,14 +74,18 @@ def main():
     poses.append(pose_from_x_y_theta( 3.3,   0.5, 0.0))
     poses.append(pose_from_x_y_theta(-5.0,   0.0, math.pi))
     poses.append(pose_from_x_y_theta(-5.0,   5.0, math.pi/2))
-    poses.append(pose_from_x_y_theta( 5.0,   5.0, math.pi))
-    poses.append(pose_from_x_y_theta( 10.0, -5.0, math.pi))
+    poses.append(pose_from_x_y_theta( 5.0,   5.0, 0.0))
+    poses.append(pose_from_x_y_theta( 10.0, -5.0, -math.pi))
+    poses.append(pose_from_x_y_theta( -10.0, -5.0, math.pi))
+    poses.append(pose_from_x_y_theta( -10.0, 5.0, 3.0*math.pi/2))
+    poses.append(pose_from_x_y_theta( 10.0, 5.0, 0))
 
     #navigator.waitUntilNav2Active(localizer="")
     while True:
-        for pose in poses:
-          navigate_to_pose(navigator, pose)
-          wait_to_complete(navigator)
+        pose = random.choice(poses)
+#        for pose in poses:
+        navigate_to_pose(navigator, pose)
+        wait_to_complete(navigator)
 
     goal_pose = PoseStamped()
     goal_pose.header.frame_id = 'map'

@@ -7,6 +7,39 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.js"></script>
 
 <script type="text/javascript" type="text/javascript">
+
+  get_pose_stamped_message = function(x,y) {
+    var time = new Date().getTime();
+    var secs = Math.floor(time/1000);
+    var nsecs = Math.round(1000000000*(time/1000-secs));
+
+    var goal_pose = new ROSLIB.Message({
+      "header": {
+        "stamp": {
+          "sec": secs,
+          "nsec": nsecs
+        },
+        "frame_id": "map"
+      },
+      "pose": {
+        "position": {
+          "x": x,
+          "y": y,
+          "z": 0
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      }
+    });
+    return goal_pose;
+  }
+
+  
+
   var ros = new ROSLIB.Ros({
     url : 'ws://localhost:9090'
   });
@@ -23,6 +56,8 @@
   ros.on('close', function() {
     document.getElementById("status").innerHTML = "Closed";
   });
+
+
 
   cmd_vel_listener = new ROSLIB.Topic({
       ros: ros,
@@ -46,11 +81,67 @@
       cmd_vel_listener.publish(twist);
     }
 
-  let goal_pose_topic = new ROSLIB.Topic({
+  let goal_pose_client = new ROSLIB.Topic({
     ros:ros,
     name:"/goal_pose",
     messageType:"/geometry_msgs/msg/PoseStamped"
   });
+
+  // // Action based movement code, removed because rosbridge doesn't support actions
+  // 
+  // in bash, it looks like 
+  // > ros2 action send_goal -f /navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: "map"}, pose: {position: {x: -10, y: 8}}}}
+  // get_goal_message = function(x,y) {
+  //   var time = new Date().getTime();
+  //   var secs = Math.floor(time/1000);
+  //   var nsecs = Math.round(1000000000*(time/1000-secs));
+
+  //   var goal_pose = new ROSLIB.Message({
+  //     "pose" :  {
+  //       "header": {
+  //         "stamp": {
+  //           "sec": secs,
+  //           "nsec": nsecs
+  //         },
+  //         "frame_id": "map"
+  //       },
+  //       "pose": {
+  //         "position": {
+  //           "x": x,
+  //           "y": y,
+  //           "z": 0
+  //         },
+  //         "orientation": {
+  //           "x": 0,
+  //           "y": 0,
+  //           "z": 0.0,
+  //           "w": 1.0
+  //         }
+  //       }
+  //     } ,
+  //     "behavior_tree":""
+  //
+  //   });
+  // }
+  // var navigate_to_pose_client = new ROSLIB.ActionClient({
+  //   ros : ros,
+  //   serverName: '/navigate_to_pose',
+  //   actionName: 'nav2_msgs/NavigateToPose'
+  // });
+  //
+  // var goal = new ROSLIB.Goal({
+  //   actionClient : navigate_to_pose_client,
+  //   goalMessage :get_goal_message(3,4)
+  // });
+
+  // goal.on('feedback', function(feedback) {
+  //   console.log('Feedback: ' + JSON.stringify(feedback));
+  // });
+
+  // goal.on('result', function(result) {
+  //   console.log('Final Result: ' + JSON.stringify(result));
+  // });
+
 
   createJoystick = function () {
     var options = {
@@ -88,33 +179,18 @@
       });
     }
 
+    let goal_pose_topic = new ROSLIB.Topic({
+      ros:ros,
+      name:"/goal_pose",
+      messageType:"/geometry_msgs/msg/PoseStamped"
+    });
+
     nav_to_pose = function(x, y) {
       var time = new Date().getTime();
       var secs = Math.floor(time/1000);
       var nsecs = Math.round(1000000000*(time/1000-secs));
 
-      var goal_pose = new ROSLIB.Message({
-        "header": {
-          "stamp": {
-            "sec": secs,
-            "nsec": nsecs
-          },
-          "frame_id": "map"
-        },
-        "pose": {
-          "position": {
-            "x": x,
-            "y": y,
-            "z": 0
-          },
-          "orientation": {
-            "x": 0,
-            "y": 0,
-            "z": 0.0,
-            "w": 1.0
-          }
-        }
-      });
+      var goal_pose = get_pose_stamped_message(x, y);
       goal_pose_topic.publish(goal_pose);
     }
 
@@ -125,6 +201,11 @@
     nav_wp1 = function() {
       nav_to_pose(5.0, 0.4);
     }
+
+    send_goal=function() {
+      goal.send();
+    }
+
 
     window.onload = function () {
       createJoystick();
@@ -138,6 +219,7 @@
   <p>Last /txt_msg received: <span id="msg"></span></p>
   <button onclick="nav_home()">Nav Home</button>
   <button onclick="nav_wp1()">Nav Wp1</button>
+  <!-- <button onclick="send_goal()">Nav Action</button> -->
   <div id="zone_joystick" style="position: relative;"></div>
 </body>
 </html>

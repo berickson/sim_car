@@ -14,6 +14,7 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 
 ```bash
 pip3 install transforms3d
+rosdep init
 rosdep update
 rosdep install -i --from-path src --rosdistro humble -y
 ```

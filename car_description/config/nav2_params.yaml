@@ -128,41 +128,42 @@ controller_server:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.1
-      yaw_goal_tolerance: 0.25
+      yaw_goal_tolerance: 3.14
 
+
+    # Line following controller
+    FollowPath:
+      plugin: "nav2_line_following_controller::LineFollowingController"
+      desired_linear_vel: 1.0
+      lookahead_dist: 1.0
+      max_angular_vel: 5.0
+      transform_tolerance: 0.1  # maximum age of tf in seconds to be considered valid
 
     # RPP
-    FollowPath:
-      plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
-      allow_reversing: true
-      approach_velocity_scaling_dist: 0.6
-      cost_scaling_dist: 0.6
-      cost_scaling_gain: 1.0
-      desired_linear_vel: 0.5
-      inflation_cost_scaling_factor: 3.0
-      lookahead_dist: 0.6
-      lookahead_time: 1.5
-      max_allowed_time_to_collision_up_to_carrot: 1.0
-      max_angular_accel: 3.2
-      max_lookahead_dist: 0.9
-      max_robot_pose_search_dist: 1.4875
-      min_approach_linear_velocity: 0.05
-      min_lookahead_dist: 0.3
-      plugin: nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
-      regulated_linear_scaling_min_radius: 0.9
-      regulated_linear_scaling_min_speed: 0.25
-      #rotate_to_heading_angular_vel: 1.8
-      #rotate_to_heading_min_angle: 0.785
-      transform_tolerance: 0.1
-      use_cost_regulated_linear_velocity_scaling: true
-      use_interpolation: true
-      use_regulated_linear_velocity_scaling: true
-      use_rotate_to_heading: false
-      use_velocity_scaled_lookahead_dist: false
-
-    
-
-
+    # FollowPath:
+    #   plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
+    #   allow_reversing: true
+    #   approach_velocity_scaling_dist: 0.6
+    #   cost_scaling_dist: 0.6
+    #   cost_scaling_gain: 1.0
+    #   desired_linear_vel: 0.5
+    #   inflation_cost_scaling_factor: 3.0
+    #   lookahead_dist: 0.6
+    #   lookahead_time: 1.5
+    #   max_allowed_time_to_collision_up_to_carrot: 1.0
+    #   max_angular_accel: 3.2
+    #   max_lookahead_dist: 0.9
+    #   max_robot_pose_search_dist: 1.4875
+    #   min_approach_linear_velocity: 0.05
+    #   min_lookahead_dist: 0.3
+    #   regulated_linear_scaling_min_radius: 0.9
+    #   regulated_linear_scaling_min_speed: 0.25
+    #   transform_tolerance: 0.1
+    #   use_cost_regulated_linear_velocity_scaling: true
+    #   use_interpolation: true
+    #   use_regulated_linear_velocity_scaling: true
+    #   use_rotate_to_heading: false
+    #   use_velocity_scaled_lookahead_dist: false
       
 controller_server_rclcpp_node:
   ros__parameters:

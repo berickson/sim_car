@@ -345,17 +345,17 @@ robot_state_publisher:
 
 velocity_smoother:
   ros__parameters:
-    # smoothing_frequency: 20.0
-    # scale_velocities: false
-    # feedback: "OPEN_LOOP"
-    max_velocity: [5.0, 0.0, 2.5]
-    # min_velocity: [-5.0, 0.0, -2.5]
-    # deadband_velocity: [0.0, 0.0, 0.0]
-    # velocity_timeout: 1.0
-    # max_accel: [2.5, 0.0, 3.2]
-    # max_decel: [-2.5, 0.0, -3.2]
-    # odom_topic: "odom"
-    # odom_duration: 0.1      
+    smoothing_frequency: 20.0             # Hz
+    scale_velocities: true                # true = adjust angular to keep same trajectory
+    feedback: "OPEN_LOOP"                 # CLOSED_LOOP means use velocities from odom, odom must be high rate compared to smoothing_frequency
+    max_velocity: [5.0, 0.0, 2.5]         # x, y, theta
+    min_velocity: [-5.0, 0.0, -2.5]       # x, y, theta, maximum reverse velocities (should be negative)
+    deadband_velocity: [0.0, 0.0, 0.0]    # velocities less than this will be translted to zero
+    velocity_timeout: 1.0                 # if no cmd_vel is sent after this time, zeros will be sent
+    max_accel: [20.0, 0.0, 33.2]
+    max_decel: [-20.0, 0.0, -33.2]
+    odom_topic: "odom"                    # topic for closed loop velocities
+    odom_duration: 0.1                    # time to buffer odometry to esimate speed
 
 slam_toolbox:
   ros__parameters:

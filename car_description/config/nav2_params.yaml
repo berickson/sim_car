@@ -134,10 +134,14 @@ controller_server:
     # Line following controller
     FollowPath:
       plugin: "nav2_line_following_controller::LineFollowingController"
-      desired_linear_vel: 1.0
-      lookahead_dist: 1.0
-      max_angular_vel: 5.0
-      transform_tolerance: 0.1  # maximum age of tf in seconds to be considered valid
+      max_velocity: 1.0               # m/s
+      max_reverse_velocity: 0.5       # m/s
+      max_acceleration: 0.3           # m/s^2
+      max_deceleration: 0.1           # m/s^2
+      max_lateral_acceleration: 0.1   # m/s^2
+      lookahead_distance: 1.0         # meters
+      min_turn_radius: 0.6            # meters
+      transform_tolerance: 0.1        # maximum age of tf in seconds to be considered valid
 
     # RPP
     # FollowPath:

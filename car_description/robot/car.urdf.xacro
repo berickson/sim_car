@@ -444,11 +444,6 @@
     <origin rpy="0 0 0" xyz="${wheelbase_length/2} 0 ${chassis_height/2 + chassis_elevation}"/>
   </joint>
 
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/sim_car</robotNamespace>
-    </plugin>
-  </gazebo>
 
   <gazebo reference="front_left_wheel">
     <mu1>${wheel_friction}</mu1>

@@ -104,7 +104,7 @@ bt_navigator_rclcpp_node:
 controller_server:
   ros__parameters:
     use_sim_time: True
-    controller_frequency: 10.0 # was 20, timed out too much
+    controller_frequency: 50.0 
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
     min_theta_velocity_threshold: 0.001
@@ -134,14 +134,17 @@ controller_server:
     # Line following controller
     FollowPath:
       plugin: "nav2_line_following_controller::LineFollowingController"
-      max_velocity: 1.0               # m/s
+      max_velocity: 1.5               # m/s
       max_reverse_velocity: 0.5       # m/s
-      max_acceleration: 0.3           # m/s^2
-      max_deceleration: 0.1           # m/s^2
-      max_lateral_acceleration: 0.1   # m/s^2
+      max_acceleration: 1.0           # m/s^2
+      max_deceleration: 1.0           # m/s^2
+      max_lateral_acceleration: 1.0   # m/s^2
       lookahead_distance: 1.0         # meters
       min_turn_radius: 0.6            # meters
       transform_tolerance: 0.1        # maximum age of tf in seconds to be considered valid
+      steering_k_p: 4.0               # pid tuning for steering, distance from path
+      steering_k_d: 10.0               # pid tuning for steering, angle from path
+
 
     # RPP
     # FollowPath:
@@ -352,12 +355,12 @@ velocity_smoother:
     smoothing_frequency: 20.0             # Hz
     scale_velocities: true                # true = adjust angular to keep same trajectory
     feedback: "OPEN_LOOP"                 # CLOSED_LOOP means use velocities from odom, odom must be high rate compared to smoothing_frequency
-    max_velocity: [5.0, 0.0, 2.5]         # x, y, theta
-    min_velocity: [-5.0, 0.0, -2.5]       # x, y, theta, maximum reverse velocities (should be negative)
+    max_velocity: [5.0, 0.0, 92.5]         # x, y, theta
+    min_velocity: [-5.0, 0.0, -92.5]       # x, y, theta, maximum reverse velocities (should be negative)
     deadband_velocity: [0.0, 0.0, 0.0]    # velocities less than this will be translted to zero
     velocity_timeout: 1.0                 # if no cmd_vel is sent after this time, zeros will be sent
-    max_accel: [20.0, 0.0, 33.2]
-    max_decel: [-20.0, 0.0, -33.2]
+    max_accel: [0.5, 0.0, 933.2]
+    max_decel: [-20.0, 0.0, -933.2]
     odom_topic: "odom"                    # topic for closed loop velocities
     odom_duration: 0.1                    # time to buffer odometry to esimate speed
 

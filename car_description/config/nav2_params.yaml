@@ -52,7 +52,7 @@ bt_navigator:
     use_sim_time: True
     global_frame: map
     robot_base_frame: base_link
-    odom_topic: /odom
+    odom_topic: car/odom
     bt_loop_duration: 10
     default_server_timeout: 20
     enable_groot_monitoring: True
@@ -104,6 +104,7 @@ bt_navigator_rclcpp_node:
 controller_server:
   ros__parameters:
     use_sim_time: True
+    odom_topic: car/odom
     controller_frequency: 50.0 
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
@@ -118,17 +119,12 @@ controller_server:
       plugin: "nav2_controller::SimpleProgressChecker"
       required_movement_radius: 0.5
       movement_time_allowance: 10.0
-    # Goal checker parameters
-    #precise_goal_checker:
-    #  plugin: "nav2_controller::SimpleGoalChecker"
-    #  xy_goal_tolerance: 0.25
-    #  yaw_goal_tolerance: 0.25
-    #  stateful: True
     general_goal_checker:
       stateful: True
-      plugin: "nav2_controller::SimpleGoalChecker"
+      plugin: "nav2_controller::StoppedGoalChecker"
       xy_goal_tolerance: 0.1
       yaw_goal_tolerance: 3.14
+      trans_stopped_velocity: 0.03
 
 
     # Line following controller
@@ -359,9 +355,9 @@ velocity_smoother:
     min_velocity: [-5.0, 0.0, -92.5]       # x, y, theta, maximum reverse velocities (should be negative)
     deadband_velocity: [0.0, 0.0, 0.0]    # velocities less than this will be translted to zero
     velocity_timeout: 1.0                 # if no cmd_vel is sent after this time, zeros will be sent
-    max_accel: [0.5, 0.0, 933.2]
-    max_decel: [-20.0, 0.0, -933.2]
-    odom_topic: "odom"                    # topic for closed loop velocities
+    max_accel: [2.5, 0.0, 933.2]
+    max_decel: [-2.5, 0.0, -933.2]
+    odom_topic: "car/odom"                    # topic for closed loop velocities
     odom_duration: 0.1                    # time to buffer odometry to esimate speed
 
 slam_toolbox:

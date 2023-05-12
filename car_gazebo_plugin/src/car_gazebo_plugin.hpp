@@ -8,6 +8,7 @@
 #include <gazebo/physics/physics.hh>
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
+#include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <sensor_msgs/msg/joy.hpp>
@@ -164,6 +165,7 @@ class CarGazeboPlugin : public gazebo::ModelPlugin {
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr odo_fr_pub;
   rclcpp::Publisher<ackermann_msgs::msg::AckermannDriveStamped>::SharedPtr ackermann_pub;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_pub;
+  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub;
 
   void publish_state() {
     const int ticks_per_revolution = 42;

@@ -16,6 +16,7 @@ find_package(gazebo_ros REQUIRED)
 find_package(gazebo_ros_pkgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(ackermann_msgs REQUIRED)
 find_package(tf2 REQUIRED)
@@ -33,6 +34,7 @@ ament_target_dependencies(car_gazebo_plugin
   "sensor_msgs"
   "ackermann_msgs"
   "std_msgs"
+  "nav_msgs"
   "geometry_msgs"
   "tf2"
   "tf2_ros"

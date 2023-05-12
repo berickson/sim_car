@@ -116,6 +116,7 @@ void CarGazeboPlugin::Load(gazebo::physics::ModelPtr model,
     ackermann_pub = ros_node_->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/" + model_->GetName() + "/cmd_ackermann", 10);
 
     pose_pub = ros_node_->create_publisher<geometry_msgs::msg::PoseStamped>("/" + model_->GetName() + "/pose", rclcpp::SensorDataQoS());
+    odom_pub = ros_node_->create_publisher<nav_msgs::msg::Odometry>("/" + model_->GetName() + "/odom", rclcpp::SensorDataQoS());
 
 
     // subscribe
@@ -165,6 +166,23 @@ void CarGazeboPlugin::Update() {
     pose_msg.pose.orientation.z = pose.Rot().Z();
     pose_msg.pose.orientation.w = pose.Rot().W();
     pose_pub->publish(pose_msg);
+
+    nav_msgs::msg::Odometry odom_msg;
+    auto linear_vel = model_->WorldLinearVel();
+    auto angular_vel = model_->WorldAngularVel();
+    odom_msg.header.stamp = ros_node_->now();
+    odom_msg.header.frame_id = "world";
+    odom_msg.pose.pose.position.x = pose.X();
+    odom_msg.pose.pose.position.y = pose.Y();
+    odom_msg.pose.pose.position.z = pose.Z();
+    odom_msg.pose.pose.orientation.x = pose.Rot().X();
+    odom_msg.pose.pose.orientation.y = pose.Rot().Y();
+    odom_msg.pose.pose.orientation.z = pose.Rot().Z();
+    odom_msg.pose.pose.orientation.w = pose.Rot().W();
+    odom_msg.twist.twist.linear.x = linear_vel.X();
+    odom_msg.twist.twist.linear.y = linear_vel.Y();
+    odom_msg.twist.twist.linear.z = linear_vel.Z();
+    odom_pub->publish(odom_msg);
 
     {
       rclcpp::Time now = ros_node_->now();

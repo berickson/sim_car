@@ -1,9 +1,7 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-import os
 import sys
 import rclpy
 from gazebo_msgs.srv import SpawnEntity
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -21,9 +19,8 @@ def main(args=None):
     while not cli.wait_for_service(timeout_sec=20.0):
         node.get_logger().info('service not available, waiting again...')
 
-    while(node.get_clock().now().seconds()==0):
+    while(node.get_clock().now().seconds() == 0):
         node.get_logger().info('waiting for clock')
-
 
     future = cli.call_async(req)
     rclpy.spin_until_future_complete(node, future)

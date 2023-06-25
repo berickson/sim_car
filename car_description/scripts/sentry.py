@@ -37,7 +37,7 @@ def yaw_from_pose(pose):
 
 
 # begins navigatator moving to pose
-def navigate_to_pose(navigator, pose):
+def navigate_to_pose(navigator, pose, wait=True):
     goal_pose = PoseStamped()
     goal_pose.header.frame_id = 'map'
     goal_pose.header.stamp = navigator.get_clock().now().to_msg()
@@ -46,6 +46,8 @@ def navigate_to_pose(navigator, pose):
     print("Navigating to pose "
           f"{pose.position.x:g},{pose.position.y:g} {yaw_from_pose(pose)*180/math.pi:g}°")
     navigator.goToPose(goal_pose)
+    if wait:
+        wait_to_complete(navigator)
 
 
 def orientation_from_yaw(yaw):
@@ -65,6 +67,14 @@ def pose_from_x_y_theta(x, y, theta):
     pose.orientation = orientation_from_yaw(float(theta))
     return pose
 
+def pose_from_x_y_qz_qw(x, y, qz, qw):
+    pose = Pose()
+    pose.position.x = float(x)
+    pose.position.y = float(y)
+    pose.orientation.z = float(qz)
+    pose.orientation.w = float(qw)
+    return pose
+
 
 def main():
     rclpy.init()
@@ -72,6 +82,21 @@ def main():
 
     node.get_logger().info("started sentry")
     navigator = BasicNavigator()
+
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(1.96, 0.52, 0.014, 0.99))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(2.92, 0.71, -0.09, 0.99))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(5.09, 0.40, -0.54 , 0.83))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(4.68, -3.38, -0.98, 0.17))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(0.07, -4.75, -0.99, 0.09))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(-3.89, -4.21, -0.99, 0.09))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(-10.38, -1.29, 0.69, 0.71))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(-8.11, 6.75, 0.38, 0.92 ))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(-1.37, 8.28, -0.05, 0.99))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(9.27, 7.14, -0.65, 0.75))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(9.9, -3.44, -0.69, 0.722))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(1.06, -6.84, 0.99, 0.08))
+
+
 
     poses = []
     poses.append(pose_from_x_y_theta(0.0, 0.0, 0.0))
@@ -87,7 +112,6 @@ def main():
     while True:
         pose = random.choice(poses)
         navigate_to_pose(navigator, pose)
-        wait_to_complete(navigator)
 
     goal_pose = PoseStamped()
     goal_pose.header.frame_id = 'map'

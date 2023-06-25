@@ -83,6 +83,7 @@ def main():
     node.get_logger().info("started sentry")
     navigator = BasicNavigator()
 
+    # nav these in order to create a starter map
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(1.96, 0.52, 0.014, 0.99))
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(2.92, 0.71, -0.09, 0.99))
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(5.09, 0.40, -0.54 , 0.83))
@@ -98,6 +99,7 @@ def main():
 
 
 
+    # nav these randomly to make it interesting
     poses = []
     poses.append(pose_from_x_y_theta(0.0, 0.0, 0.0))
     poses.append(pose_from_x_y_theta(3.3, 0.5, 0.0))

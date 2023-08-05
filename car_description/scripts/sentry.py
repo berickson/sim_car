@@ -67,6 +67,7 @@ def pose_from_x_y_theta(x, y, theta):
     pose.orientation = orientation_from_yaw(float(theta))
     return pose
 
+
 def pose_from_x_y_qz_qw(x, y, qz, qw):
     pose = Pose()
     pose.position.x = float(x)
@@ -91,13 +92,11 @@ def main():
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(0.07, -4.75, -0.99, 0.09))
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(-3.89, -4.21, -0.99, 0.09))
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(-10.38, -1.29, 0.69, 0.71))
-    navigate_to_pose(navigator, pose_from_x_y_qz_qw(-8.11, 6.75, 0.38, 0.92 ))
+    navigate_to_pose(navigator, pose_from_x_y_qz_qw(-8.11, 6.75, 0.38, 0.92))
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(-1.37, 8.28, -0.05, 0.99))
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(9.27, 7.14, -0.65, 0.75))
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(9.9, -3.44, -0.69, 0.722))
     navigate_to_pose(navigator, pose_from_x_y_qz_qw(1.06, -6.84, 0.99, 0.08))
-
-
 
     # nav these randomly to make it interesting
     poses = []
@@ -114,19 +113,5 @@ def main():
     while True:
         pose = random.choice(poses)
         navigate_to_pose(navigator, pose)
-
-    goal_pose = PoseStamped()
-    goal_pose.header.frame_id = 'map'
-    goal_pose.header.stamp = navigator.get_clock().now().to_msg()
-    goal_pose.pose.position.x = 0.0
-    goal_pose.pose.position.y = 0.0
-    goal_pose.pose.orientation.w = 1.0
-
-    navigator.goToPose(goal_pose)
-    wait_to_complete(navigator)
-
-    # sanity check a valid path exists
-    # path = navigator.getPath(initial_pose, goal_pose)
-
 
 main()

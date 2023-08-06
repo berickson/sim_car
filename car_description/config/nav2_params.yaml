@@ -226,7 +226,7 @@ global_costmap:
       use_sim_time: True
       # robot_radius: 0.32
       footprint: "[ [-0.05, 0.15], [0.40,0.15], [0.40,-0.15], [0.15,-0.15], [-0.05,-0.15] ]"
-      footprint_padding: 0.2 # make footprint larger in global costmap so there is more room for local planner
+      footprint_padding: 0.05
 
       resolution: 0.05
       track_unknown_space: false # bke

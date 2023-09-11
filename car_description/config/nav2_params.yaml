@@ -105,7 +105,7 @@ controller_server:
   ros__parameters:
     use_sim_time: False
     odom_topic: car/odom
-    controller_frequency: 50.0 
+    controller_frequency: 10.0 
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
     min_theta_velocity_threshold: 0.001
@@ -182,9 +182,9 @@ local_costmap:
       robot_base_frame: base_footprint
       use_sim_time: False
       rolling_window: true
-      width: 6
-      height: 6
-      resolution: 0.05
+      width: 3
+      height: 3
+      resolution: 0.1 
       footprint: "[ [-0.05, 0.15], [0.40,0.15], [0.40,-0.15], [0.15,-0.15], [-0.05,-0.15] ]"
       footprint_padding: 0.0
       #plugins: ["static_layer", "inflation_layer", "obstacle_layer"]

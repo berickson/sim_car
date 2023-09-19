@@ -182,8 +182,8 @@ local_costmap:
       robot_base_frame: base_footprint
       use_sim_time: False
       rolling_window: true
-      width: 3
-      height: 3
+      width: 6
+      height: 6
       resolution: 0.1 
       footprint: "[ [-0.05, 0.15], [0.40,0.15], [0.40,-0.15], [0.15,-0.15], [-0.05,-0.15] ]"
       footprint_padding: 0.0
@@ -255,7 +255,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 2.0
-        inflation_radius: 2.0
+        inflation_radius: 4.0
       always_send_full_costmap: True
   global_costmap_client:
     ros__parameters:

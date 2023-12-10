@@ -254,8 +254,8 @@ global_costmap:
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 2.0
-        inflation_radius: 4.0
+        cost_scaling_factor: 1.0
+        inflation_radius: 2.0
       always_send_full_costmap: True
   global_costmap_client:
     ros__parameters:

@@ -9,6 +9,7 @@ My goal is to make a series of Gazebo models, worlds, and plugins to simulate my
 - install ROS2 Humble desktop full, see https://docs.ros.org/en/humble/Installation.html
 - make a workspace, see https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html
 - clone this repo into your workspaces src folder
+- clone the repo https://github.com/berickson/nav2_line_following_controller into your src folder
 - cd workspace folder
 - install dependencies
 
